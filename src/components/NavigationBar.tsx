@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 export const NavigationBar: React.FC = () => {
   return (
-    <Navbar position="static" className="select-none">
+    <Navbar position="static" className="select-none fixed">
       <NavbarContent className="">
         <NavbarBrand className=" text-xl font-semibold">实验器材预约系统</NavbarBrand>
         <NavbarItem>

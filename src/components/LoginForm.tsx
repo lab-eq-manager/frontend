@@ -20,19 +20,38 @@ export const LoginForm = () => {
       <CardHeader className=" flex items-center justify-center font-semibold text-lg">
         用户登录
       </CardHeader>
-      <CardBody className="flex w-1/2 ">
+      <CardBody className="flex ">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 ">
           <Controller
             name="uid"
             control={control}
             defaultValue=""
-            render={({ field }) => <Input {...field} label="用户名" />}
+            render={({ field }) => (
+              <Input
+                {...field}
+                label="用户名"
+                isClearable
+                onClear={() => {
+                  field.onChange('');
+                }}
+              />
+            )}
           />
           <Controller
             name="password"
             control={control}
             defaultValue=""
-            render={({ field }) => <Input {...field} label="密码" type="password" />}
+            render={({ field }) => (
+              <Input
+                {...field}
+                label="密码"
+                type="password"
+                isClearable
+                onClear={() => {
+                  field.onChange('');
+                }}
+              />
+            )}
           />
           <Button type="submit" color="primary">
             登录
