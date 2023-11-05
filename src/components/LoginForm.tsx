@@ -11,13 +11,17 @@ export const LoginForm = () => {
   const onSubmit = (data) => console.log(data);
   console.log(errors);
 
+  // 必填校验
+  register('uid', { required: true });
+  register('password', { required: true });
+
   return (
-    <Card className="max-w-[400px]">
-      <CardHeader className=" flex items-center justify-center font-semibold text-2xl">
+    <Card className="p-3" style={{ width: '30rem' }}>
+      <CardHeader className=" flex items-center justify-center font-semibold text-lg">
         用户登录
       </CardHeader>
-      <CardBody className="min-w-unit-3 flex w-1/2">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <CardBody className="flex w-1/2 ">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 ">
           <Controller
             name="uid"
             control={control}
@@ -28,9 +32,11 @@ export const LoginForm = () => {
             name="password"
             control={control}
             defaultValue=""
-            render={({ field }) => <Input {...field} label="密码" />}
+            render={({ field }) => <Input {...field} label="密码" type="password" />}
           />
-          <Button type="submit">Login</Button>
+          <Button type="submit" color="primary">
+            登录
+          </Button>
         </form>
       </CardBody>
     </Card>
