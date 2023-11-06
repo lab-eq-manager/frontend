@@ -14,7 +14,7 @@ export const App: React.FC = () => {
     <NextUIProvider navigate={navigate}>
       <NavigationBar />
       {/* App */}
-      <div className="app-wrapper w-screen h-screen" style={{ padding: '6rem 0px' }}>
+      <div className="app-wrapper h-screen" style={{ padding: '6rem 0px' }}>
         <Routes>
           <Route path="/" element={<LoginForm />} />
           <Route path="/account" element={<PersonView />} />
