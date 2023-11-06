@@ -13,6 +13,7 @@ import { Equipment, EquipmentStatus } from '../types';
 
 interface EquipmentCardProps {
   equipment: Equipment;
+  showButton: boolean;
 }
 
 const statusIdtoText: Record<EquipmentStatus, string> = {
@@ -40,9 +41,14 @@ const statusIdtoColor: Record<EquipmentStatus, string> = {
  * @param equipment
  * @returns EquipmentCard
  */
-export const EquipmentCard: React.FC<EquipmentCardProps> = ({ equipment }) => {
+export const EquipmentCard: React.FC<EquipmentCardProps> = ({ equipment, showButton = true }) => {
   return (
-    <Card className="w-full max-w-3xl bg-gary-50" isFooterBlurred>
+    <Card
+      className="w-full max-w-3xl bg-background/60 dark:bg-default-100/50"
+      isFooterBlurred
+      isBlurred
+      isHoverable
+    >
       <CardBody className="flex flex-row items-start gap-6 p-6">
         <div
           className="image-wrapper"
@@ -67,10 +73,20 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({ equipment }) => {
           <div className="text-sm text-gray-600 p-1">{equipment.priceInfo}</div>
         </div>
       </CardBody>
-      <CardFooter className="flex flex-row justify-end gap-2 px-4">
-        <Button variant="flat">查看详情</Button>
-        <Button color="primary">申请使用</Button>
-      </CardFooter>
+      {showButton && (
+        <CardFooter className="flex flex-row justify-end gap-2 px-4 bg-background/60">
+          <Button variant="flat">查看详情</Button>
+          <Button
+            color="primary"
+            onClick={() => {
+              // change route to /apply/:eqId
+              window.location.href = `/apply/${encodeURIComponent(equipment.eqId)}`;
+            }}
+          >
+            申请使用
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 };
