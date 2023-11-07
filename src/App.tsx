@@ -14,14 +14,19 @@ export const App: React.FC = () => {
     <NextUIProvider navigate={navigate}>
       <NavigationBar />
       {/* App */}
-      <div className="app-wrapper h-screen" style={{ padding: '6rem 0px' }}>
-        <Routes>
-          <Route path="/" element={<LoginForm />} />
-          <Route path="/account" element={<PersonView />} />
-          <Route path="/approval" element={<Approval />} />
-          <Route path="/equipments" element={<Equipments />} />
-          <Route path="/apply/:eqId" element={<ApplyView />} />
-        </Routes>
+      <div
+        className="app-wrapper h-screen overflow-scroll bg-gradient-to-tr from-slate-50 to-gray-100"
+        style={{ padding: '6rem 0px' }}
+      >
+        <div className="in w-full max-w-3xl mx-auto">
+          <Routes>
+            <Route path="/" element={<LoginForm />} />
+            <Route path="/account" element={<PersonView />} />
+            <Route path="/approval" element={<Approval />} />
+            <Route path="/equipments" element={<Equipments />} />
+            <Route path="/apply/:eqId" element={<ApplyView />} />
+          </Routes>
+        </div>
       </div>
     </NextUIProvider>
   );

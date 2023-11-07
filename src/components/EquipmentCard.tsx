@@ -47,7 +47,6 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({ equipment, showBut
       className="w-full max-w-3xl bg-background/60 dark:bg-default-100/50"
       isFooterBlurred
       isBlurred
-      isHoverable
     >
       <CardBody className="flex flex-row items-start gap-6 p-6">
         <div
