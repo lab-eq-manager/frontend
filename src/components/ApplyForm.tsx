@@ -12,7 +12,26 @@ import {
   Button,
   Divider,
   CardHeader,
+  Select,
+  SelectItem,
+  CardFooter,
 } from '@nextui-org/react';
+import dayjs from 'dayjs';
+
+const availableTime = [
+  '0:00-2:00',
+  '2:00-4:00',
+  '4:00-6:00',
+  '6:00-8:00',
+  '8:00-10:00',
+  '10:00-12:00',
+  '12:00-14:00',
+  '14:00-16:00',
+  '16:00-18:00',
+  '18:00-20:00',
+  '20:00-22:00',
+  '22:00-24:00',
+];
 
 export function ApplyForm({ eqId }) {
   const {
@@ -22,9 +41,9 @@ export function ApplyForm({ eqId }) {
     formState: { errors },
   } = useForm();
   const onSubmit = (data) => console.log(data);
+  register('uid', { required: true });
   console.log(errors);
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [popoverOpen, setPopoverOpen] = useState(false);
 
   return (
     <Card className="p-3 w-full">
@@ -48,11 +67,11 @@ export function ApplyForm({ eqId }) {
         <Controller
           name="applyDate"
           control={control}
-          defaultValue={date}
+          defaultValue={dayjs(date?.toDateString() || new Date()).format('YYYY-MM-DD')}
           render={({ field }) => {
             return (
               <div className="flex gap-2 flex-row items-center">
-                <Input label="使用时间" disabled value={field.value}></Input>
+                <Input label="使用时间" disabled required value={field.value}></Input>
                 <Popover>
                   <PopoverTrigger>
                     <Button style={{ height: '3.4rem' }} color="primary">
@@ -65,7 +84,9 @@ export function ApplyForm({ eqId }) {
                       selected={date}
                       onSelect={(date) => {
                         setDate(date);
-                        field.onChange(date?.toDateString());
+                        field.onChange(
+                          dayjs(date?.toDateString() || new Date()).format('YYYY-MM-DD'),
+                        );
                       }}
                       className="bg-white mx-1 my-2"
                     />
@@ -76,6 +97,27 @@ export function ApplyForm({ eqId }) {
           }}
         />
         <Controller
+          name="timeIndex"
+          control={control}
+          defaultValue="0"
+          render={({ field }) => (
+            <Select
+              label="使用时间段"
+              value={field.value}
+              onChange={(e) => {
+                field.onChange(e.target.value);
+              }}
+            >
+              {availableTime.map((time, index) => (
+                <SelectItem key={index} value={index}>
+                  {time}
+                </SelectItem>
+              ))}
+            </Select>
+          )}
+        />
+        <Divider />
+        <Controller
           name="applyReason"
           control={control}
           defaultValue=""
@@ -84,6 +126,16 @@ export function ApplyForm({ eqId }) {
           )}
         />
       </CardBody>
+      <CardFooter className="flex justify-center">
+        <Button
+          color="primary"
+          onClick={handleSubmit(onSubmit)}
+          className="w-full"
+          disabled={!date}
+        >
+          提交申请
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
