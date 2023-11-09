@@ -15,7 +15,9 @@ export interface LoginRequest {
 }
 
 export const login = async (data: LoginRequest) => {
-  const response = await axios.post('/api/login', data);
+  const response = await axios.post('/api/login', data).catch((error) => {
+    throw error.response.data;
+  });
   return response.data;
 };
 

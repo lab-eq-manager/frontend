@@ -28,7 +28,7 @@ export const LoginForm = () => {
         toast({
           duration: 2000,
           title: '登录失败',
-          description: err.message,
+          description: err.data,
           variant: 'destructive',
         });
       });

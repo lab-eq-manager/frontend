@@ -1,4 +1,4 @@
-import { Equipment, EquipmentStatus } from '../types';
+import { Equipment, EquipmentStatus, ApplyEquipmentRequest } from '../types';
 
 export const mockEquipments: Equipment[] = [
   {
@@ -63,5 +63,26 @@ export const mockEquipments: Equipment[] = [
     labId: '1',
     info: '器材1的详细信息',
     priceInfo: '器材1的价格信息',
+  },
+];
+
+export const mockApplyEquipmentRequests: ApplyEquipmentRequest[] = [
+  {
+    uid: '42024200',
+    eqId: '#TPSJK-SDKFJ',
+    applyDate: '2023-11-01',
+    timeIndex: 8,
+    applyReason: '实验使用',
+    status: EquipmentStatus.APPLYING,
+    applyTime: '2023-11-01 08:00:00',
+  },
+  {
+    uid: '42024202',
+    eqId: '#TPSJK-SDKFJ',
+    applyDate: '2023-11-01',
+    timeIndex: 9,
+    applyReason: '实验使用',
+    status: EquipmentStatus.APPLYING,
+    applyTime: '2023-11-01 21:03:00',
   },
 ];
