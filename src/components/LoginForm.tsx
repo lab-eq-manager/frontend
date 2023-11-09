@@ -1,15 +1,38 @@
 import { useForm, Controller } from 'react-hook-form';
 import { Input, Card, Button, CardBody, CardHeader } from '@nextui-org/react';
+import { useToast } from './ui/use-toast';
+import { store } from '@/utils/store';
 
 export const LoginForm = () => {
+  const { toast } = useToast();
+  const { dispatch } = store;
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+  const onSubmit = async (data) => {
+    toast({ title: 'login', type: 'foreground' });
+    console.log(data, errors);
+    await dispatch.uid
+      .loginAsync(data)
+      .then(() => {
+        toast({
+          title: '登录成功',
+          description: '欢迎回来',
+        });
+      })
+      .catch((err) => {
+        console.log('err', err);
+        toast({
+          duration: 2000,
+          title: '登录失败',
+          description: err.message,
+          variant: 'destructive',
+        });
+      });
+  };
 
   // 必填校验
   register('uid', { required: true });

@@ -1,4 +1,5 @@
 import { nextui } from '@nextui-org/theme';
+import tailwindcssAnimate from 'tailwindcss-animate';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -76,5 +77,5 @@ export default {
       },
     },
   },
-  plugins: ['tailwindcss-animate', nextui()],
+  plugins: [tailwindcssAnimate, nextui()],
 };

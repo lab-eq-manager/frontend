@@ -1,6 +1,14 @@
 import axios from 'axios';
 import { Equipment } from '../types';
 
+axios.defaults.baseURL = 'http://localhost:3000';
+
+export interface UniversalResponse<T> {
+  code: number;
+  message: string;
+  data: T;
+}
+
 export interface LoginRequest {
   uid: string;
   password: string;
