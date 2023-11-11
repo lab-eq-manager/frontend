@@ -6,9 +6,11 @@ import { NavigationBar } from './components/NavigationBar';
 import { PersonView } from './layouts/PresonView';
 import { Approval } from './layouts/Approval';
 import { Equipments } from './layouts/Equipments';
-import { LoginForm } from './components/LoginForm';
+
 import { ApplyView } from './layouts/ApplyView';
+import { EquipmentView } from './layouts/EquipmentView';
 import { Toaster } from './components/ui/toaster';
+import { LoginView } from './layouts/LoginView';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -23,11 +25,13 @@ export const App: React.FC = () => {
       >
         <div className="in w-full max-w-3xl mx-auto">
           <Routes>
-            <Route path="/" element={<LoginForm />} />
+            <Route path="/" element={<LoginView />} />
+            <Route path="/home" element={<LoginView />} />
             <Route path="/account" element={<PersonView />} />
             <Route path="/approval" element={<Approval />} />
             <Route path="/equipments" element={<Equipments />} />
             <Route path="/apply/:eqId" element={<ApplyView />} />
+            <Route path="/detail/:eqId" element={<EquipmentView />} />
           </Routes>
         </div>
       </div>

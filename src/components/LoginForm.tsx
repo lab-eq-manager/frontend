@@ -9,29 +9,42 @@ export const LoginForm = () => {
   const {
     control,
     register,
+    trigger,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm();
-  const onSubmit = async (data) => {
-    toast({ title: 'login', type: 'foreground' });
-    console.log(data, errors);
-    await dispatch.uid
-      .loginAsync(data)
-      .then(() => {
+  const onSubmit = async () => {
+    trigger().then(async (res) => {
+      console.log(res);
+      if (!res) {
         toast({
-          title: '登录成功',
-          description: '欢迎回来',
-        });
-      })
-      .catch((err) => {
-        console.log('err', err);
-        toast({
-          duration: 2000,
           title: '登录失败',
-          description: err.data,
+          description: '请检查输入是否完整',
           variant: 'destructive',
         });
-      });
+        return;
+      } else {
+        const data = getValues();
+        console.log(data, errors);
+        await dispatch.uid
+          .loginAsync(data)
+          .then(() => {
+            toast({
+              title: '登录成功',
+              description: '欢迎回来',
+            });
+          })
+          .catch((err) => {
+            console.log('err', err);
+            toast({
+              title: '登录失败',
+              description: err.data,
+              variant: 'destructive',
+            });
+          });
+      }
+    });
   };
 
   // 必填校验
@@ -44,7 +57,7 @@ export const LoginForm = () => {
         用户登录
       </CardHeader>
       <CardBody className="flex ">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 ">
+        <form noValidate className="flex flex-col gap-4 ">
           <Controller
             name="uid"
             control={control}
@@ -52,6 +65,7 @@ export const LoginForm = () => {
             render={({ field }) => (
               <Input
                 {...field}
+                isRequired
                 label="用户名"
                 isClearable
                 onClear={() => {
@@ -69,14 +83,16 @@ export const LoginForm = () => {
                 {...field}
                 label="密码"
                 type="password"
+                isRequired
                 isClearable
+                formNoValidate
                 onClear={() => {
                   field.onChange('');
                 }}
               />
             )}
           />
-          <Button type="submit" color="primary">
+          <Button color="primary" onClick={onSubmit}>
             登录
           </Button>
         </form>

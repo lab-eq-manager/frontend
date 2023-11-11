@@ -42,3 +42,17 @@ export const availableTime = [
   '20:00-22:00',
   '22:00-24:00',
 ];
+
+export enum UserRole {
+  SUPER_ADMIN = 0,
+  ADMIN = 1,
+  STUDENT = 2,
+  OUTSIDER = 3,
+}
+
+export const userRoleMap = {
+  [UserRole.SUPER_ADMIN]: '超级管理员',
+  [UserRole.ADMIN]: '管理员',
+  [UserRole.STUDENT]: '学生',
+  [UserRole.OUTSIDER]: '外来人员',
+};

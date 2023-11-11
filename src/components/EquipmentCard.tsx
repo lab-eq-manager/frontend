@@ -14,6 +14,7 @@ import { Equipment, EquipmentStatus } from '../types';
 interface EquipmentCardProps {
   equipment: Equipment;
   showButton: boolean;
+  fullView?: boolean;
 }
 
 const statusIdtoText: Record<EquipmentStatus, string> = {
@@ -41,14 +42,21 @@ const statusIdtoColor: Record<EquipmentStatus, string> = {
  * @param equipment
  * @returns EquipmentCard
  */
-export const EquipmentCard: React.FC<EquipmentCardProps> = ({ equipment, showButton = true }) => {
+export const EquipmentCard: React.FC<EquipmentCardProps> = ({
+  equipment,
+  showButton = true,
+  fullView,
+}) => {
   return (
     <Card
       className="w-full max-w-3xl bg-background/60 dark:bg-default-100/50"
       isFooterBlurred
       isBlurred
     >
-      <CardBody className="flex flex-row items-start gap-6 p-6">
+      <CardBody
+        className={`flex items-start gap-6 p-6 ${fullView && 'gap-10 p-10'}`}
+        style={{ flexDirection: fullView ? 'column' : 'row' }}
+      >
         <div
           className="image-wrapper"
           style={{
@@ -74,7 +82,14 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({ equipment, showBut
       </CardBody>
       {showButton && (
         <CardFooter className="flex flex-row justify-end gap-2 px-4 bg-background/60">
-          <Button variant="flat">查看详情</Button>
+          <Button
+            variant="flat"
+            onClick={() => {
+              window.location.href = `/detail/${encodeURIComponent(equipment.eqId)}`;
+            }}
+          >
+            查看详情
+          </Button>
           <Button
             color="primary"
             onClick={() => {
