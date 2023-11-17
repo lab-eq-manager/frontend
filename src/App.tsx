@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { NextUIProvider } from '@nextui-org/react';
 
 import { NavigationBar } from './components/NavigationBar';
@@ -11,12 +11,14 @@ import { ApplyView } from './layouts/ApplyView';
 import { EquipmentView } from './layouts/EquipmentView';
 import { Toaster } from './components/ui/toaster';
 import { LoginView } from './layouts/LoginView';
+import { useSelector } from 'react-redux';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
+  const uid = useSelector((state) => state.uid);
   return (
     <NextUIProvider navigate={navigate}>
-      <NavigationBar />
+      <NavigationBar uid={uid} />
       <Toaster />
       {/* App */}
       <div
@@ -24,15 +26,19 @@ export const App: React.FC = () => {
         style={{ padding: '6rem 0px' }}
       >
         <div className="in w-full max-w-3xl mx-auto">
-          <Routes>
-            <Route path="/" element={<LoginView />} />
-            <Route path="/home" element={<LoginView />} />
-            <Route path="/account" element={<PersonView />} />
-            <Route path="/approval" element={<Approval />} />
-            <Route path="/equipments" element={<Equipments />} />
-            <Route path="/apply/:eqId" element={<ApplyView />} />
-            <Route path="/detail/:eqId" element={<EquipmentView />} />
-          </Routes>
+          {uid ? (
+            <Routes>
+              <Route path="/account" element={<PersonView />} />
+              <Route path="/approval" element={<Approval />} />
+              <Route path="/equipments" element={<Equipments />} />
+              <Route path="/apply/:eqId" element={<ApplyView />} />
+              <Route path="/detail/:eqId" element={<EquipmentView />} />
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="*" element={<LoginView />} />
+            </Routes>
+          )}
         </div>
       </div>
     </NextUIProvider>

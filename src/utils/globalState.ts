@@ -14,8 +14,10 @@ export const uid = createModel<RootModel>()({
   },
   effects: (dispatch) => ({
     async loginAsync(payload: LoginRequest) {
-      const uid = await login(payload);
-      dispatch.uid.setUid(uid);
+      await login(payload).then((res) => {
+        dispatch.uid.setUid(payload.uid);
+        console.log('uid', payload.uid);
+      });
     },
   }),
 });

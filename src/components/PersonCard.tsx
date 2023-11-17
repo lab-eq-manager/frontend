@@ -1,24 +1,21 @@
 import { Controller, useForm } from 'react-hook-form';
-import { useState } from 'react';
-import { Calendar } from '@/components/ui/calendar';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
   Input,
-  Textarea,
   Popover,
   PopoverContent,
   PopoverTrigger,
   Button,
   Divider,
-  CardHeader,
   Select,
   SelectItem,
   CardFooter,
 } from '@nextui-org/react';
-import dayjs from 'dayjs';
 
-import { availableTime, userRoleMap } from '@/types';
+import { UserRole, availableTime, userRoleMap } from '@/types';
+import { getUserInfo } from '@/utils/requests';
 
 export function PasswordForm() {
   const {
@@ -57,17 +54,39 @@ export function PasswordForm() {
   );
 }
 
-export function PersonCard({ uid }) {
+export function PersonCard({ uid }: { uid: string }) {
   const {
     control,
     register,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<{
+    uid: string;
+    name: string;
+    leader: string;
+    phoneNumber: string;
+    role: number;
+  }>();
   const onSubmit = (data) => console.log(data);
   register('uid', { required: true });
   console.log(errors);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  useEffect(() => {
+    if (uid) {
+      getUserInfo({ uid }).then((res) => {
+        console.log(res);
+        const { data } = res;
+        setValue('uid', uid);
+        setValue('name', data.name);
+        setValue('leader', data.leader);
+        setValue('phoneNumber', data.phoneNumber);
+        setValue('role', data.role);
+        console.log('val', getValues());
+      });
+    }
+  }, [uid, getValues, setValue]);
 
   return (
     <Card className="p-3 w-full">
@@ -84,12 +103,23 @@ export function PersonCard({ uid }) {
           name="role"
           control={control}
           render={({ field }) => (
-            <Select label="身份">
-              {Object.keys(userRoleMap).map((role) => (
-                <SelectItem key={role} value={role}>
-                  {userRoleMap[role]}
-                </SelectItem>
-              ))}
+            <Select
+              label="身份"
+              selectedKeys={[`${field.value}`]}
+              onChange={(e) => {
+                field.onChange(parseInt(e.target.value));
+              }}
+              isDisabled
+            >
+              {Object.keys(userRoleMap).map((role) => {
+                console.log('==it', role, field.value);
+                const curRoleNum = parseInt(role);
+                return (
+                  <SelectItem key={`${role}`} value={`${role}`}>
+                    {userRoleMap[curRoleNum as UserRole]}
+                  </SelectItem>
+                );
+              })}
             </Select>
           )}
         />

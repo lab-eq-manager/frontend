@@ -39,7 +39,7 @@ export const LoginForm = () => {
             console.log('err', err);
             toast({
               title: '登录失败',
-              description: err.data,
+              description: err.message,
               variant: 'destructive',
             });
           });
