@@ -10,6 +10,7 @@ import {
 } from '@nextui-org/react';
 
 import { Equipment, EquipmentStatus } from '../types';
+import { useNavigate } from 'react-router-dom';
 
 interface EquipmentCardProps {
   equipment: Equipment;
@@ -47,6 +48,7 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
   showButton = true,
   fullView,
 }) => {
+  const navigate = useNavigate();
   return (
     <Card
       className="w-full max-w-3xl bg-background/60 dark:bg-default-100/50"
@@ -85,7 +87,7 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
           <Button
             variant="flat"
             onClick={() => {
-              window.location.href = `/detail/${encodeURIComponent(equipment.eqId)}`;
+              navigate(`/detail/${encodeURIComponent(equipment.eqId)}`);
             }}
           >
             查看详情
@@ -93,8 +95,7 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
           <Button
             color="primary"
             onClick={() => {
-              // change route to /apply/:eqId
-              window.location.href = `/apply/${encodeURIComponent(equipment.eqId)}`;
+              navigate(`/apply/${encodeURIComponent(equipment.eqId)}`);
             }}
           >
             申请使用
