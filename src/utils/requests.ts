@@ -156,3 +156,36 @@ export const logout = async () => {
   });
   return response.data;
 };
+
+export interface UserApplyListResponse {
+  eqId: string;
+  applyDate: string;
+  timeIndex: number;
+  applyTime: string;
+  status: EquipmentStatus;
+  applyReason: string;
+}
+[];
+
+export const getUserApplyList = async () => {
+  const response = await axios.get('/api/apply/list').catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export interface QueryAvailableTimeRequest {
+  eqId: string;
+  applyDate: string;
+}
+
+export interface QueryAvailableTimeResponse {
+  timeIndex: number[];
+}
+
+export const queryAvailableTime = async (data: QueryAvailableTimeRequest) => {
+  const response = await axios.post('/api/equipment/query', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};

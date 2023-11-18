@@ -16,8 +16,9 @@ import {
   DropdownTrigger,
   DropdownItem,
   DropdownMenu,
+  Chip,
 } from '@nextui-org/react';
-import { ApplyEquipmentRequest, availableTime } from '@/types';
+import { ApplyEquipmentRequest, applyStatusMap, availableTime, equipmentStatusMap } from '@/types';
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -79,13 +80,13 @@ export const ApplyTable = ({
     switch (columnKey) {
       case 'uid':
       case 'eqId':
-      case 'applyTime':
       case 'applyDate':
+      case 'applyTime':
         return <div>{cellValue}</div>;
       case 'timeIndex':
         return <div>{availableTime[cellValue]}</div>;
       case 'status':
-        return <div>{cellValue}</div>;
+        return <Chip>{applyStatusMap[cellValue]}</Chip>;
       case 'actions':
         return (
           <div className="relative flex justify-end items-center gap-2">
@@ -160,7 +161,9 @@ export const ApplyTable = ({
         </TableHeader>
         <TableBody emptyContent={'No users found'} items={eqData}>
           {(item) => (
-            <TableRow key={`${item.uid}-${item.eqId}-${item.applyDate}-${item.timeIndex}`}>
+            <TableRow
+              key={`${item.uid}-${item.eqId}-${item.applyDate}-${item.timeIndex}-${item.applyTime}`}
+            >
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
           )}

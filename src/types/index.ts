@@ -18,6 +18,18 @@ export const equipmentStatusMap = {
   [EquipmentStatus.BROKEN]: '已报废',
 };
 
+export enum ApplyStatus {
+  APPLYING = 1,
+  APPROVED = 2,
+  REJECTED = 3,
+}
+
+export const applyStatusMap = {
+  [ApplyStatus.APPLYING]: '申请中',
+  [ApplyStatus.APPROVED]: '通过',
+  [ApplyStatus.REJECTED]: '拒绝',
+};
+
 export interface Equipment {
   eqId: string;
   name: string;
@@ -39,6 +51,7 @@ export interface ApplyEquipmentRequest {
 }
 
 export const availableTime = [
+  'please select',
   '0:00-2:00',
   '2:00-4:00',
   '4:00-6:00',

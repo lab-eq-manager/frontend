@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Chip } from '@nextui-org/react';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Chip, Button } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
 import { UserRole, userRoleMap } from '@/types';
 
@@ -36,7 +36,9 @@ export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
           </>
         ) : (
           <NavbarItem>
-            <Link to="/login">登录</Link>
+            <Link to="/login">
+              <Button>登录</Button>
+            </Link>
           </NavbarItem>
         )}
       </NavbarContent>

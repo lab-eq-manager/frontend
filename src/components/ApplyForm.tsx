@@ -19,7 +19,7 @@ import {
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { availableTime } from '@/types';
-import { applyEquipment } from '@/utils/requests';
+import { applyEquipment, queryAvailableTime } from '@/utils/requests';
 import { useToast } from './ui/use-toast';
 
 export function ApplyForm({ eqId }) {
@@ -55,12 +55,21 @@ export function ApplyForm({ eqId }) {
   register('uid', { required: true });
   console.log(errors);
   const [date, setDate] = useState<Date | undefined>(new Date());
-
+  const [availableTimeIndex, setAvailableTimeIndex] = useState<number[]>([]);
   const uid = useSelector((state) => state.uid);
   useEffect(() => {
     setValue('uid', uid);
     setValue('eqId', eqId);
   }, [uid]);
+
+  useEffect(() => {
+    queryAvailableTime({
+      eqId: eqId,
+      applyDate: dayjs(date?.toDateString()).format('YYYY-MM-DD'),
+    }).then((res) => {
+      setAvailableTimeIndex(res.timeIndex);
+    });
+  }, [date]);
 
   return (
     <Card className="p-3 w-full">
@@ -125,11 +134,14 @@ export function ApplyForm({ eqId }) {
                 field.onChange(e.target.value);
               }}
             >
-              {availableTime.map((time, index) => (
-                <SelectItem key={index} value={index}>
-                  {time}
-                </SelectItem>
-              ))}
+              {availableTime.map((time, index) => {
+                if (availableTimeIndex.includes(index))
+                  return (
+                    <SelectItem key={`${index}`} value={`${index}`}>
+                      {time}
+                    </SelectItem>
+                  );
+              })}
             </Select>
           )}
         />
