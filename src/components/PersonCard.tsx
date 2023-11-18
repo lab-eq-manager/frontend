@@ -15,16 +15,51 @@ import {
 } from '@nextui-org/react';
 
 import { UserRole, availableTime, userRoleMap } from '@/types';
-import { getUserInfo } from '@/utils/requests';
+import {
+  UpdateUerPasswordRequest,
+  UpdateUserRequest,
+  getUserInfo,
+  logout,
+  updateUser,
+  updateUserPassword,
+} from '@/utils/requests';
+import { toast, useToast } from './ui/use-toast';
 
-export function PasswordForm() {
+export function PasswordForm({ uid }: { uid: string }) {
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    if (data.newPassword !== data.confirmPassword) {
+      toast({
+        title: '修改失败',
+        description: '新密码与确认密码不一致',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const req: UpdateUerPasswordRequest = {
+      uid,
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword,
+    };
+    updateUserPassword(req)
+      .then((res) => {
+        toast({
+          title: '修改成功',
+        });
+      })
+      .catch((err) => {
+        toast({
+          title: '修改失败',
+          description: err.message,
+          variant: 'destructive',
+        });
+      });
+  };
   console.log(errors);
 
   return (
@@ -54,6 +89,14 @@ export function PasswordForm() {
   );
 }
 
+interface FormData {
+  uid: string;
+  name: string;
+  leader: string;
+  phoneNumber: string;
+  role: number;
+}
+
 export function PersonCard({ uid }: { uid: string }) {
   const {
     control,
@@ -62,20 +105,11 @@ export function PersonCard({ uid }: { uid: string }) {
     getValues,
     setValue,
     formState: { errors },
-  } = useForm<{
-    uid: string;
-    name: string;
-    leader: string;
-    phoneNumber: string;
-    role: number;
-  }>();
-  const onSubmit = (data) => console.log(data);
-  register('uid', { required: true });
-  console.log(errors);
+  } = useForm<FormData>();
 
-  useEffect(() => {
-    if (uid) {
-      getUserInfo({ uid }).then((res) => {
+  const getUserInfoByUid = () => {
+    getUserInfo({ uid })
+      .then((res) => {
         console.log(res);
         const { data } = res;
         setValue('uid', uid);
@@ -83,8 +117,39 @@ export function PersonCard({ uid }: { uid: string }) {
         setValue('leader', data.leader);
         setValue('phoneNumber', data.phoneNumber);
         setValue('role', data.role);
-        console.log('val', getValues());
+      })
+      .catch((err) => {
+        toast({
+          title: '获取用户信息失败',
+          description: err.message,
+          variant: 'destructive',
+        });
       });
+  };
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    updateUser(data as UpdateUserRequest)
+      .then((res) => {
+        toast({
+          title: '修改成功',
+        });
+        getUserInfoByUid();
+      })
+      .catch((err) => {
+        toast({
+          title: '修改失败',
+          description: err.message,
+          variant: 'destructive',
+        });
+      });
+  };
+  register('uid', { required: true });
+  console.log(errors);
+
+  useEffect(() => {
+    if (uid) {
+      getUserInfoByUid();
     }
   }, [uid, getValues, setValue]);
 
@@ -146,15 +211,23 @@ export function PersonCard({ uid }: { uid: string }) {
         <Button color="primary" onClick={handleSubmit(onSubmit)} fullWidth>
           保存信息
         </Button>
-        <Popover backdrop="blur">
+        <Popover>
           <PopoverTrigger>
             <Button fullWidth>修改密码</Button>
           </PopoverTrigger>
           <PopoverContent className="w-full">
-            <PasswordForm />
+            <PasswordForm uid={uid} />
           </PopoverContent>
         </Popover>
-        <Button color="danger" fullWidth>
+        <Button
+          color="danger"
+          fullWidth
+          onClick={async () => {
+            logout().then(() => {
+              window.location.reload();
+            });
+          }}
+        >
           退出登录
         </Button>
       </CardFooter>

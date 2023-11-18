@@ -1,9 +1,18 @@
 import { createModel, Models } from '@rematch/core';
-import { login, LoginRequest } from './requests';
+import { getUserInfo, login, LoginRequest } from './requests';
 
 export interface RootModel extends Models<RootModel> {
   uid: typeof uid;
 }
+
+export const role = createModel<RootModel>()({
+  state: 2 as number,
+  reducers: {
+    setRole(state, payload: number) {
+      return payload;
+    },
+  },
+});
 
 export const uid = createModel<RootModel>()({
   state: '' as string,
@@ -18,8 +27,12 @@ export const uid = createModel<RootModel>()({
         dispatch.uid.setUid(payload.uid);
         console.log('uid', payload.uid);
       });
+      await getUserInfo({ uid: payload.uid }).then((res) => {
+        console.log('role', res);
+        dispatch.role.setRole(res.data.role);
+      });
     },
   }),
 });
 
-export const models: RootModel = { uid };
+export const models: RootModel = { uid, role };

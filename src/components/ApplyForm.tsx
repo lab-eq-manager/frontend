@@ -1,5 +1,5 @@
 import { Controller, useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Card,
@@ -17,20 +17,50 @@ import {
   CardFooter,
 } from '@nextui-org/react';
 import dayjs from 'dayjs';
-
+import { useSelector } from 'react-redux';
 import { availableTime } from '@/types';
+import { applyEquipment } from '@/utils/requests';
+import { useToast } from './ui/use-toast';
 
 export function ApplyForm({ eqId }) {
   const {
     control,
+    setValue,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const { toast } = useToast();
+
+  const onSubmit = (data) => {
+    console.log(data);
+    const req = {
+      ...data,
+      timeIndex: parseInt(data.timeIndex),
+    };
+    applyEquipment(req)
+      .then((res) => {
+        toast({
+          title: '申请成功',
+        });
+      })
+      .catch((err) => {
+        toast({
+          title: '申请失败',
+          description: err.message,
+          variant: 'destructive',
+        });
+      });
+  };
   register('uid', { required: true });
   console.log(errors);
   const [date, setDate] = useState<Date | undefined>(new Date());
+
+  const uid = useSelector((state) => state.uid);
+  useEffect(() => {
+    setValue('uid', uid);
+    setValue('eqId', eqId);
+  }, [uid]);
 
   return (
     <Card className="p-3 w-full">

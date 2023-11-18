@@ -20,6 +20,7 @@ import {
 import { ApplyEquipmentRequest, availableTime } from '@/types';
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -62,6 +63,8 @@ export const ApplyTable = ({
     'actions',
   ];
 
+  const navigate = useNavigate();
+
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
 
   const headerColumns = useMemo(() => {
@@ -95,7 +98,7 @@ export const ApplyTable = ({
               <DropdownMenu>
                 <DropdownItem
                   onClick={() => {
-                    window.location.href = `/detail/${encodeURIComponent(applyData.eqId)}`;
+                    navigate(`/detail/${encodeURIComponent(applyData.eqId)}`);
                   }}
                 >
                   查看设备

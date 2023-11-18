@@ -12,13 +12,17 @@ import { EquipmentView } from './layouts/EquipmentView';
 import { Toaster } from './components/ui/toaster';
 import { LoginView } from './layouts/LoginView';
 import { useSelector } from 'react-redux';
+import { EditEquipmentView } from './layouts/EditEquipmentView';
+import { AddEquipmentView } from './layouts/AddEquipmentView';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
   const uid = useSelector((state) => state.uid);
+  const role = useSelector((state) => state.role);
+
   return (
     <NextUIProvider navigate={navigate}>
-      <NavigationBar uid={uid} />
+      <NavigationBar uid={uid} role={role} />
       <Toaster />
       {/* App */}
       <div
@@ -26,13 +30,15 @@ export const App: React.FC = () => {
         style={{ padding: '6rem 0px' }}
       >
         <div className="in w-full max-w-3xl mx-auto">
-          {uid ? (
+          {uid && role ? (
             <Routes>
               <Route path="/account" element={<PersonView />} />
               <Route path="/approval" element={<Approval />} />
               <Route path="/equipments" element={<Equipments />} />
               <Route path="/apply/:eqId" element={<ApplyView />} />
               <Route path="/detail/:eqId" element={<EquipmentView />} />
+              <Route path="/equipment/edit/:eqId" element={<EditEquipmentView />} />
+              <Route path="/equipment/add" element={<AddEquipmentView />} />
             </Routes>
           ) : (
             <Routes>

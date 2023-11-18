@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Chip } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
+import { UserRole, userRoleMap } from '@/types';
 
 export interface NavagationBarProps {
   uid?: string;
+  role: UserRole;
 }
 
 export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
-  const { uid } = props;
+  const { uid, role } = props;
 
   return (
     <Navbar position="static" className="select-none fixed">
@@ -25,7 +27,11 @@ export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
               <Link to="/approval">申请列表</Link>
             </NavbarItem>
             <NavbarItem>
-              <Link to="/account">用户：{uid}</Link>
+              <Link to="/account">
+                <Chip color="primary">
+                  {userRoleMap[role]} {uid}
+                </Chip>
+              </Link>
             </NavbarItem>
           </>
         ) : (

@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 interface EquipmentCardProps {
   equipment: Equipment;
   showButton: boolean;
+  showManageButton: boolean;
   fullView?: boolean;
 }
 
@@ -46,9 +47,11 @@ const statusIdtoColor: Record<EquipmentStatus, string> = {
 export const EquipmentCard: React.FC<EquipmentCardProps> = ({
   equipment,
   showButton = true,
+  showManageButton = false,
   fullView,
 }) => {
   const navigate = useNavigate();
+
   return (
     <Card
       className="w-full max-w-3xl bg-background/60 dark:bg-default-100/50"
@@ -66,7 +69,12 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
             flexShrink: 0,
           }}
         >
-          <Image src={equipment.imgUrl} width={200} height={300} isZoomed />
+          <Image
+            src={equipment.imgUrl || 'https://picsum.photos/200/200'}
+            width={200}
+            height={300}
+            isZoomed
+          />
         </div>
         <div className="texts-wrapper flex-grow gap-2 flex flex-col">
           <div className="title text-xl">{equipment.name}</div>
@@ -84,6 +92,16 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
       </CardBody>
       {showButton && (
         <CardFooter className="flex flex-row justify-end gap-2 px-4 bg-background/60">
+          {showManageButton && (
+            <Button
+              variant="flat"
+              onClick={() => {
+                navigate(`/equipment/edit/${encodeURIComponent(equipment.eqId)}`);
+              }}
+            >
+              编辑设备信息
+            </Button>
+          )}
           <Button
             variant="flat"
             onClick={() => {
