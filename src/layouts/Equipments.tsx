@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { EquipmentCard } from '../components/EquipmentCard';
-import { Equipment, EquipmentStatus } from '../types';
+import { Equipment, EquipmentStatus, UserRole } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { Button, Input } from '@nextui-org/react';
 import { getEquipmentList } from '@/utils/requests';
 import { useToast } from '@/components/ui/use-toast';
+import { useSelector } from 'react-redux';
 
 const EquipmentList: React.FC<{ equipments: Equipment[] }> = (props) => {
   return (
@@ -37,6 +38,8 @@ const useEquipmentList = () => {
 };
 
 export const Equipments: React.FC = () => {
+  const role = useSelector((state) => state.role);
+  const isAdmin = role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN;
   const [search, setSearch] = useState('');
   const { equipments } = useEquipmentList();
   const { toast } = useToast();
@@ -58,22 +61,25 @@ export const Equipments: React.FC = () => {
     <div className="w-full flex gap-6 flex-col ">
       <div className="toolbar flex gap-2">
         <Input
-          label="搜索设备"
+          label="搜索名称、设备号、实验室..."
           className="bg-slate-50"
           variant="bordered"
           onChange={(e) => {
             setSearch(e.target.value);
           }}
         />
-        <Button
-          color="primary"
-          style={{ height: '3.4rem' }}
-          onClick={() => {
-            navigate('/equipment/add');
-          }}
-        >
-          添加设备
-        </Button>
+
+        {isAdmin && (
+          <Button
+            color="primary"
+            style={{ height: '3.4rem' }}
+            onClick={() => {
+              navigate('/equipment/add');
+            }}
+          >
+            添加设备
+          </Button>
+        )}
       </div>
 
       <EquipmentList equipments={filteredEquipments} />

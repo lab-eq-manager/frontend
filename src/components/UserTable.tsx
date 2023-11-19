@@ -18,45 +18,46 @@ import {
   DropdownMenu,
   Chip,
 } from '@nextui-org/react';
-import { ApplyEquipmentRequest, applyStatusMap, availableTime, equipmentStatusMap } from '@/types';
+import { ApplyEquipmentRequest, userRoleMap } from '@/types';
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { GetManageUserListResponse, ManageUserList } from '@/utils/requests';
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 const columns = [
-  { name: '申请人', uid: 'uid' },
-  { name: '设备编号', uid: 'eqId' },
-  { name: '申请时间', uid: 'applyTime' },
-  { name: '使用日期', uid: 'applyDate' },
-  { name: '使用时段', uid: 'timeIndex' },
-  { name: '申请状态', uid: 'status' },
+  { name: '用户名', uid: 'uid' },
+  { name: '姓名', uid: 'name' },
+  { name: '导师', uid: 'leader' },
+  { name: '电话号码', uid: 'phoneNumber' },
+  { name: '角色', uid: 'role' },
+  { name: '管理实验室', uid: 'lab' },
   { name: '操作', uid: 'actions' },
 ];
 
-export enum ApplyTableColumn {
+export enum UserTableColumn {
   UID = 'uid',
-  EQ_ID = 'eqId',
-  APPLY_TIME = 'applyTime',
-  APPLY_DATE = 'applyDate',
-  TIME_INDEX = 'timeIndex',
-  STATUS = 'status',
+  NAME = 'name',
+  LEADER = 'leader',
+  PHONE_NUMBER = 'phoneNumber',
+  ROLE = 'role',
+  LAB = 'lab',
   ACTIONS = 'actions',
 }
 
-export const ApplyTable = ({
-  eqData,
+export const UserTable = ({
+  tableData,
   showColumn,
   canCustomColumn,
 }: {
-  eqData: ApplyEquipmentRequest[];
-  showColumn?: ApplyTableColumn[];
+  tableData: GetManageUserListResponse;
+  showColumn?: UserTableColumn[];
   canCustomColumn?: boolean;
 }) => {
-  const INITIAL_VISIBLE_COLUMNS = showColumn || ['uid', 'eqId', 'applyDate', 'timeIndex', 'status'];
+  const INITIAL_VISIBLE_COLUMNS = showColumn || ['uid', 'name', 'role', 'actions'];
 
   const navigate = useNavigate();
 
@@ -68,19 +69,17 @@ export const ApplyTable = ({
     return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
   }, [visibleColumns]);
 
-  const renderCell = useCallback((applyData: ApplyEquipmentRequest, columnKey: React.Key) => {
-    const cellValue = applyData[columnKey as keyof ApplyEquipmentRequest];
+  const renderCell = useCallback((applyData: ManageUserList, columnKey: React.Key) => {
+    const cellValue = applyData[columnKey as keyof ManageUserList];
 
     switch (columnKey) {
       case 'uid':
-      case 'eqId':
-      case 'applyDate':
-      case 'applyTime':
+      case 'name':
+      case 'leader':
+      case 'phoneNumber':
         return <div>{cellValue}</div>;
-      case 'timeIndex':
-        return <div>{availableTime[cellValue]}</div>;
-      case 'status':
-        return <Chip>{applyStatusMap[cellValue]}</Chip>;
+      case 'role':
+        return <Chip>{userRoleMap[cellValue]}</Chip>;
       case 'actions':
         return (
           <div className="relative flex justify-end items-center gap-2">
@@ -93,13 +92,12 @@ export const ApplyTable = ({
               <DropdownMenu>
                 <DropdownItem
                   onClick={() => {
-                    navigate(`/detail/${encodeURIComponent(applyData.eqId)}`);
+                    navigate(`/manage/user/edit/${encodeURIComponent(applyData.uid)}`);
                   }}
                 >
-                  查看设备
+                  编辑用户
                 </DropdownItem>
-                <DropdownItem>批准</DropdownItem>
-                <DropdownItem>拒绝</DropdownItem>
+                <DropdownItem>删除用户</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -112,7 +110,7 @@ export const ApplyTable = ({
   return (
     <div className="wrapper flex gap-2 flex-col">
       {canCustomColumn && (
-        <div className="toolbar">
+        <div className="toolbar flex justify-between">
           <Dropdown>
             <DropdownTrigger className="hidden sm:flex">
               <Button endContent={<ChevronDownIcon strokeWidth={1} />} variant="flat">
@@ -134,6 +132,14 @@ export const ApplyTable = ({
               ))}
             </DropdownMenu>
           </Dropdown>
+          <Button
+            color="primary"
+            onClick={() => {
+              navigate(`/manage/user/add`);
+            }}
+          >
+            添加用户
+          </Button>
         </div>
       )}
 
@@ -153,11 +159,9 @@ export const ApplyTable = ({
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={'No data'} items={eqData}>
+        <TableBody emptyContent={'No data'} items={tableData}>
           {(item) => (
-            <TableRow
-              key={`${item.uid}-${item.eqId}-${item.applyDate}-${item.timeIndex}-${item.applyTime}`}
-            >
+            <TableRow key={`${item.uid}`}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
           )}

@@ -14,6 +14,12 @@ import { LoginView } from './layouts/LoginView';
 import { useSelector } from 'react-redux';
 import { EditEquipmentView } from './layouts/EditEquipmentView';
 import { AddEquipmentView } from './layouts/AddEquipmentView';
+import { UserListView } from './layouts/UserListView';
+import { EditUserInfoView } from './layouts/EditUserInfoView';
+import { AddUserView } from './layouts/AddUserView';
+import { LabListView } from './layouts/LabListView';
+import { AddLabView } from './layouts/AddLabView';
+import { AdminApprovalView } from './layouts/AdminApprovalView';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -30,7 +36,7 @@ export const App: React.FC = () => {
         style={{ padding: '6rem 0px' }}
       >
         <div className="in w-full max-w-3xl mx-auto">
-          {uid && role ? (
+          {uid ? (
             <Routes>
               <Route path="/account" element={<PersonView />} />
               <Route path="/approval" element={<Approval />} />
@@ -39,10 +45,18 @@ export const App: React.FC = () => {
               <Route path="/detail/:eqId" element={<EquipmentView />} />
               <Route path="/equipment/edit/:eqId" element={<EditEquipmentView />} />
               <Route path="/equipment/add" element={<AddEquipmentView />} />
+              <Route path="/manage/user" element={<UserListView />} />
+              <Route path="/manage/user/add" element={<AddUserView />} />
+              <Route path="/manage/user/edit/:uid" element={<EditUserInfoView />} />
+              <Route path="/manage/lab" element={<LabListView />} />
+              <Route path="/manage/lab/add" element={<AddLabView />} />
+              <Route path="/manage/lab/edit/:labId" element={<EditUserInfoView />} />
+              <Route path="/manage/approval" element={<AdminApprovalView />} />
             </Routes>
           ) : (
             <Routes>
-              <Route path="*" element={<LoginView />} />
+              <Route path="/login" element={<LoginView />} />
+              <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
           )}
         </div>

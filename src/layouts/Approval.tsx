@@ -16,9 +16,9 @@ export const Approval = () => {
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
-      <div className="title font-semibold text-2xl">申请列表</div>
+      <div className="title font-semibold text-2xl">我的申请</div>
       <div className="w-full">
-        {eqData && eqData?.length !== 0 && <ApplyTable eqData={eqData} canCustomColumn />}
+        {eqData && eqData?.length !== 0 && <ApplyTable eqData={eqData} />}
       </div>
     </div>
   );

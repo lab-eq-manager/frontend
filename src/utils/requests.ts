@@ -189,3 +189,142 @@ export const queryAvailableTime = async (data: QueryAvailableTimeRequest) => {
   });
   return response.data.data;
 };
+
+export interface ManageUserList {
+  uid: string;
+  name: string;
+  leader: string;
+  phoneNum: string;
+  role: UserRole;
+  lab?: string[];
+}
+
+export type GetManageUserListResponse = ManageUserList[];
+
+export const getManageUserList = async () => {
+  const response = await axios.get('/api/manage/user/list').catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export interface ResetUserPasswordRequest {
+  uid: string;
+}
+
+export const resetUserPassword = async (data: ResetUserPasswordRequest) => {
+  const response = await axios.post('/api/manage/user/password/reset', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export interface UserInfoChangeByAdminReq {
+  uid: string;
+  name?: string;
+  leader?: string;
+  phoneNum?: string;
+  role?: UserRole;
+  lab?: string[];
+}
+
+export const userInfoChangeByAdmin = async (data: UserInfoChangeByAdminReq) => {
+  const response = await axios.post('/api/manage/user/update', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export const addUserByAdmin = async (data: UserInfoChangeByAdminReq) => {
+  const response = await axios.post('/api/manage/user/create', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export interface GetLabListInfo {
+  labId: string;
+  name: string;
+}
+
+export type GetLabListResponse = GetLabListInfo[];
+
+export const getLabList = async () => {
+  const response = await axios.get('/api/lab/list').catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export interface UpdateLabInfoRequest {
+  labId: string;
+  name: string;
+}
+
+export const updateLabInfo = async (data: UpdateLabInfoRequest) => {
+  const response = await axios.post('/api/manage/lab/update', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export const addLab = async (data: UpdateLabInfoRequest) => {
+  const response = await axios.post('/api/manage/lab/create', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export interface GetAdminApprovalListRequest {
+  pageNo: number;
+  pageSize: number;
+  lab?: string[];
+  status?: EquipmentStatus[];
+}
+
+export interface AdminApprovalInfo {
+  applyId: string;
+  eqId: string;
+  labId: string;
+  uid: string;
+  applyTime: string;
+  applyDate: string;
+  approvalTime: string;
+  applyReason: string;
+  timeIndex: number;
+  status: EquipmentStatus;
+}
+
+export interface GetAdminApprovalListResponse {
+  applies: AdminApprovalInfo[];
+  length: number;
+}
+
+export const getAdminApprovalList = async (data: GetAdminApprovalListRequest) => {
+  const response = await axios.post('/api/manage/approve/list', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export interface AdminApprovalRequest {
+  applyId: string;
+}
+
+export const adminApproval = async (data: AdminApprovalRequest) => {
+  const response = await axios.post('/api/manage/apply/approve', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
+export interface AdminRejectRequest {
+  applyId: string;
+}
+
+export const adminReject = async (data: AdminRejectRequest) => {
+  const response = await axios.post('/api/manage/apply/deny', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};

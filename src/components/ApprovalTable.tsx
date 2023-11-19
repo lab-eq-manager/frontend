@@ -22,41 +22,55 @@ import { ApplyEquipmentRequest, applyStatusMap, availableTime, equipmentStatusMa
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AdminApprovalInfo, adminApproval, adminReject } from '@/utils/requests';
+import { toast } from './ui/use-toast';
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 const columns = [
-  { name: '申请人', uid: 'uid' },
+  { name: '申请编号', uid: 'applyId' },
   { name: '设备编号', uid: 'eqId' },
+  { name: '申请人', uid: 'uid' },
   { name: '申请时间', uid: 'applyTime' },
   { name: '使用日期', uid: 'applyDate' },
   { name: '使用时段', uid: 'timeIndex' },
+  { name: '申请处理日期', uid: 'approvalTime' },
   { name: '申请状态', uid: 'status' },
   { name: '操作', uid: 'actions' },
 ];
 
-export enum ApplyTableColumn {
-  UID = 'uid',
+export enum AdminApprovalTableColumn {
+  APPLY_ID = 'applyId',
   EQ_ID = 'eqId',
+  UID = 'uid',
   APPLY_TIME = 'applyTime',
   APPLY_DATE = 'applyDate',
   TIME_INDEX = 'timeIndex',
+  APPROVAL_TIME = 'approvalTime',
   STATUS = 'status',
   ACTIONS = 'actions',
 }
 
-export const ApplyTable = ({
+export const ApprovalTable = ({
   eqData,
   showColumn,
   canCustomColumn,
+  getData,
 }: {
-  eqData: ApplyEquipmentRequest[];
-  showColumn?: ApplyTableColumn[];
+  eqData: AdminApprovalInfo[];
+  showColumn?: AdminApprovalTableColumn[];
   canCustomColumn?: boolean;
+  getData: () => void;
 }) => {
-  const INITIAL_VISIBLE_COLUMNS = showColumn || ['uid', 'eqId', 'applyDate', 'timeIndex', 'status'];
+  const INITIAL_VISIBLE_COLUMNS = showColumn || [
+    'uid',
+    'eqId',
+    'applyDate',
+    'timeIndex',
+    'actions',
+  ];
 
   const navigate = useNavigate();
 
@@ -68,8 +82,8 @@ export const ApplyTable = ({
     return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
   }, [visibleColumns]);
 
-  const renderCell = useCallback((applyData: ApplyEquipmentRequest, columnKey: React.Key) => {
-    const cellValue = applyData[columnKey as keyof ApplyEquipmentRequest];
+  const renderCell = useCallback((applyData: AdminApprovalInfo, columnKey: React.Key) => {
+    const cellValue = applyData[columnKey as keyof AdminApprovalInfo];
 
     switch (columnKey) {
       case 'uid':
@@ -98,8 +112,46 @@ export const ApplyTable = ({
                 >
                   查看设备
                 </DropdownItem>
-                <DropdownItem>批准</DropdownItem>
-                <DropdownItem>拒绝</DropdownItem>
+                <DropdownItem
+                  onClick={() => {
+                    adminApproval({ applyId: applyData.applyId })
+                      .then((res) => {
+                        getData();
+                        toast({
+                          title: '批准成功',
+                        });
+                      })
+                      .catch((err) => {
+                        toast({
+                          title: '批准失败',
+                          description: err.message,
+                          variant: 'destructive',
+                        });
+                      });
+                  }}
+                >
+                  批准
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => {
+                    adminReject({ applyId: applyData.applyId })
+                      .then((res) => {
+                        getData();
+                        toast({
+                          title: '拒绝成功',
+                        });
+                      })
+                      .catch((err) => {
+                        toast({
+                          title: '拒绝失败',
+                          description: err.message,
+                          variant: 'destructive',
+                        });
+                      });
+                  }}
+                >
+                  拒绝
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -110,7 +162,7 @@ export const ApplyTable = ({
   }, []);
 
   return (
-    <div className="wrapper flex gap-2 flex-col">
+    <div className="wrapper flex gap-2 flex-col w-full">
       {canCustomColumn && (
         <div className="toolbar">
           <Dropdown>
@@ -155,9 +207,7 @@ export const ApplyTable = ({
         </TableHeader>
         <TableBody emptyContent={'No data'} items={eqData}>
           {(item) => (
-            <TableRow
-              key={`${item.uid}-${item.eqId}-${item.applyDate}-${item.timeIndex}-${item.applyTime}`}
-            >
+            <TableRow key={`${item.applyId}`}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
           )}

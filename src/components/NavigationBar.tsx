@@ -18,14 +18,25 @@ export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
         {uid ? (
           <>
             <NavbarItem>
-              <Link to="/">首页</Link>
-            </NavbarItem>
-            <NavbarItem>
               <Link to="/equipments">器材列表</Link>
             </NavbarItem>
-            <NavbarItem>
-              <Link to="/approval">申请列表</Link>
-            </NavbarItem>
+            {role !== UserRole.ADMIN && role !== UserRole.SUPER_ADMIN ? (
+              <NavbarItem>
+                <Link to="/approval">我的申请</Link>
+              </NavbarItem>
+            ) : (
+              <>
+                <NavbarItem>
+                  <Link to="/manage/user">用户管理</Link>
+                </NavbarItem>
+                <NavbarItem>
+                  <Link to="/manage/approval">预约审批</Link>
+                </NavbarItem>
+                <NavbarItem>
+                  <Link to="/manage/lab">实验室管理</Link>
+                </NavbarItem>
+              </>
+            )}
             <NavbarItem>
               <Link to="/account">
                 <Chip color="primary">
