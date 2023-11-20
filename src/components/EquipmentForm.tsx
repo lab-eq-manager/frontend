@@ -10,6 +10,8 @@ import {
   SelectItem,
   CardFooter,
   Button,
+  Divider,
+  Chip,
 } from '@nextui-org/react';
 import { EquipmentStatus, equipmentStatusMap } from '@/types';
 import {
@@ -17,6 +19,7 @@ import {
   addEquipment,
   getEquipmentDetail,
   updateEquipment,
+  uploadFile,
 } from '@/utils/requests';
 interface FormData {
   eqId: string;
@@ -29,6 +32,59 @@ interface FormData {
 }
 import { useToast } from './ui/use-toast';
 import { useNavigate } from 'react-router-dom';
+
+export const FileUpload: React.FC<{
+  onUploaded: (res: string) => void;
+}> = ({ onUploaded }) => {
+  const {
+    control,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{
+    file: FileList;
+  }>();
+  const { toast } = useToast();
+  register('file', { required: true });
+
+  const onSubmit = (data: { file: FileList }) => {
+    uploadFile({ file: data.file[0] })
+      .then((res) => {
+        toast({
+          title: '上传成功',
+        });
+        onUploaded(res.imgUrl);
+      })
+      .catch((err) => {
+        toast({
+          title: '上传失败',
+          description: err.message,
+          variant: 'destructive',
+        });
+      });
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2 flex-col">
+        <Chip color="primary" className="w-1/2">
+          上传设备图片
+        </Chip>
+        <div className="wrapper flex justify-between gap-2 p-2 items-center">
+          <input
+            {...control.register('file', { required: true })}
+            type="file"
+            accept="image/jpg,image/png"
+          ></input>
+          <Button color="primary" type="submit">
+            上传
+          </Button>
+        </div>
+      </form>
+    </>
+  );
+};
 
 export const EquipmentForm: React.FC<{ eqId?: string }> = (props) => {
   const {
@@ -170,11 +226,22 @@ export const EquipmentForm: React.FC<{ eqId?: string }> = (props) => {
           control={control}
           render={({ field }) => <Textarea {...field} label="价格信息" />}
         />
+        <Divider />
         <Controller
           name="imgUrl"
           control={control}
-          render={({ field }) => <Input {...field} label="图片链接" />}
+          render={({ field }) => {
+            return (
+              <FileUpload
+                onUploaded={(res) => {
+                  console.log('img', res);
+                  field.onChange(res);
+                }}
+              />
+            );
+          }}
         />
+        <Divider />
       </CardBody>
       <CardFooter className="flex justify-center gap-5">
         <Button color="primary" onClick={handleSubmit(onSubmit)} fullWidth>

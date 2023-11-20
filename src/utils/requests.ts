@@ -328,3 +328,20 @@ export const adminReject = async (data: AdminRejectRequest) => {
   });
   return response.data.data;
 };
+
+export interface UploadFileRequest {
+  file: File;
+}
+
+export interface UploadFileResponse {
+  imgUrl: string;
+}
+
+export const uploadFile = async (data: UploadFileRequest) => {
+  const formData = new FormData();
+  formData.append('file', data.file);
+  const response = await axios.post('/file-api/upload', formData).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
