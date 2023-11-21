@@ -345,3 +345,10 @@ export const uploadFile = async (data: UploadFileRequest) => {
   });
   return response.data.data;
 };
+
+export const getExcel = async () => {
+  const response = await axios.get('/api/manage/log/list').catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};

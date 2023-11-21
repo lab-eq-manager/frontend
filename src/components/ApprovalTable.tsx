@@ -22,8 +22,9 @@ import { ApplyEquipmentRequest, applyStatusMap, availableTime, equipmentStatusMa
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { AdminApprovalInfo, adminApproval, adminReject } from '@/utils/requests';
+import { AdminApprovalInfo, adminApproval, adminReject, getExcel } from '@/utils/requests';
 import { toast } from './ui/use-toast';
+import axios from 'axios';
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -164,7 +165,7 @@ export const ApprovalTable = ({
   return (
     <div className="wrapper flex gap-2 flex-col w-full">
       {canCustomColumn && (
-        <div className="toolbar">
+        <div className="toolbar flex items-center justify-between">
           <Dropdown>
             <DropdownTrigger className="hidden sm:flex">
               <Button endContent={<ChevronDownIcon strokeWidth={1} />} variant="flat">
@@ -186,6 +187,27 @@ export const ApprovalTable = ({
               ))}
             </DropdownMenu>
           </Dropdown>
+          <Button
+            color="primary"
+            onClick={() => {
+              getExcel()
+                .then((res) => {
+                  window.open(res.data.fileUrl, '_blank');
+                  toast({
+                    title: '导出成功',
+                  });
+                })
+                .catch((err) => {
+                  toast({
+                    title: '导出失败',
+                    description: err.message,
+                    variant: 'destructive',
+                  });
+                });
+            }}
+          >
+            导出 Excel
+          </Button>
         </div>
       )}
 
