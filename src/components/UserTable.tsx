@@ -97,7 +97,7 @@ export const UserTable = ({
                 >
                   编辑用户
                 </DropdownItem>
-                <DropdownItem>删除用户</DropdownItem>
+                <DropdownItem isDisabled>删除用户</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>

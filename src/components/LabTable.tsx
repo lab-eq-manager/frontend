@@ -19,7 +19,7 @@ import {
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { GetLabListInfo, GetLabListResponse, updateLabInfo } from '@/utils/requests';
+import { GetLabListInfo, GetLabListResponse, deleteLab, updateLabInfo } from '@/utils/requests';
 import { useForm } from 'react-hook-form';
 import { useToast } from './ui/use-toast';
 
@@ -135,7 +135,26 @@ export const LabTable = ({
                 </>
               </PopoverContent>
             </Popover>
-            <Button color="danger" size="sm">
+            <Button
+              color="danger"
+              size="sm"
+              onClick={() => {
+                deleteLab({ labId: applyData.labId })
+                  .then((res) => {
+                    toast({
+                      title: '删除成功',
+                    });
+                    getData();
+                  })
+                  .catch((err) => {
+                    toast({
+                      title: '删除失败',
+                      description: err.message,
+                      variant: 'destructive',
+                    });
+                  });
+              }}
+            >
               删除
             </Button>
           </div>

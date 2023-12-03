@@ -275,6 +275,13 @@ export const addLab = async (data: UpdateLabInfoRequest) => {
   return response.data.data;
 };
 
+export const deleteLab = async (data: { labId: string }) => {
+  const response = await axios.post('/api/manage/lab/delete', data).catch((error) => {
+    throw error.response.data;
+  });
+  return response.data.data;
+};
+
 export interface GetAdminApprovalListRequest {
   pageNo: number;
   pageSize: number;

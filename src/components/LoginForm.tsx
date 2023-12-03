@@ -67,6 +67,7 @@ export const LoginForm = () => {
                 {...field}
                 isRequired
                 label="用户名"
+                autoComplete="username"
                 isClearable
                 onClear={() => {
                   field.onChange('');
@@ -85,6 +86,7 @@ export const LoginForm = () => {
                 type="password"
                 isRequired
                 isClearable
+                autoComplete="current-password"
                 formNoValidate
                 onClear={() => {
                   field.onChange('');
