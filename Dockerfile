@@ -3,20 +3,17 @@ FROM node:20
 # Create app directory
 WORKDIR /usr/src/app
 
-# Install yarn
-RUN npm install -g yarn
-
 # Install app dependencies
-COPY ./* ./
+COPY . ./
 
 # Install dependencies
-RUN yarn install
+RUN npm install
 
 # Build app
-RUN yarn run build
+RUN npm run build
 
 # Run preview server
-RUN yarn run preview
+CMD [ "npm", "run", "preview" ]
 
 # Expose port
 EXPOSE 4173
