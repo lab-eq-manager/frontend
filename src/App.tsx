@@ -61,6 +61,24 @@ export const App: React.FC = () => {
           )}
         </div>
       </div>
+      <div className="footer flex gap-8 items-center justify-center bg-primary p-20">
+        <img
+          src="logo.png"
+          className="h-10 cursor-pointer"
+          draggable={false}
+          onClick={() => {
+            window.open('https://qy.ustb.edu.cn/index.htm', '_blank');
+          }}
+        />
+        <div className="qr-wrapper flex flex-col items-center justify-center gap-3">
+          <img src="qr2.png" className="h-20" />
+          <p className=" text-xs text-cyan-50">北京科技大学</p>
+        </div>
+        <div className="qr-wrapper flex flex-col items-center justify-center gap-3">
+          <img src="qr1.jpg" className="h-20" />
+          <p className=" text-xs text-cyan-50">北科大前沿院</p>
+        </div>
+      </div>
     </NextUIProvider>
   );
 };

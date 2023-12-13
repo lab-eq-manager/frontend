@@ -12,9 +12,20 @@ export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
   const { uid, role } = props;
 
   return (
-    <Navbar position="static" className="select-none fixed">
+    <Navbar position="static" className="select-none fixed bg-primary/70">
       <NavbarContent className="">
-        <NavbarBrand className=" text-xl font-semibold">实验器材预约系统</NavbarBrand>
+        <NavbarBrand className=" text-xl font-semibold flex gap-2">
+          <img
+            src="logo.png"
+            style={{ filter: 'invert(100%)' }}
+            className=" h-8 cursor-pointer"
+            draggable={false}
+            onClick={() => {
+              window.open('https://qy.ustb.edu.cn/index.htm', '_blank');
+            }}
+          />
+          <p>仪器设备预约系统</p>
+        </NavbarBrand>
         {uid ? (
           <>
             <NavbarItem>
