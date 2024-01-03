@@ -112,6 +112,7 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
           </Button>
           <Button
             color="primary"
+            isDisabled={equipment.status !== EquipmentStatus.AVAILABLE}
             onClick={() => {
               navigate(`/apply/${encodeURIComponent(equipment.eqId)}`);
             }}
