@@ -43,11 +43,13 @@ export const LabTable = ({
   tableData,
   showColumn,
   canCustomColumn,
+  canAddLab,
   getData,
 }: {
   tableData: GetLabListResponse;
   showColumn?: LabTableColumn[];
   canCustomColumn?: boolean;
+  canAddLab?: boolean;
   getData: () => void;
 }) => {
   const {
@@ -138,6 +140,7 @@ export const LabTable = ({
             <Button
               color="danger"
               size="sm"
+              isDisabled={!canAddLab}
               onClick={() => {
                 deleteLab({ labId: applyData.labId })
                   .then((res) => {
@@ -189,14 +192,16 @@ export const LabTable = ({
               ))}
             </DropdownMenu>
           </Dropdown>
-          <Button
-            color="primary"
-            onClick={() => {
-              navigate(`/manage/lab/add`);
-            }}
-          >
-            添加实验室
-          </Button>
+          {canAddLab && (
+            <Button
+              color="primary"
+              onClick={() => {
+                navigate(`/manage/lab/add`);
+              }}
+            >
+              添加实验室
+            </Button>
+          )}
         </div>
       )}
 
