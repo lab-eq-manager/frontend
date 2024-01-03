@@ -15,12 +15,41 @@ import {
   Select,
   SelectItem,
   CardFooter,
+  CheckboxGroup,
+  Checkbox,
 } from '@nextui-org/react';
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { availableTime } from '@/types';
 import { TimeIndexDetail, applyEquipment, queryAvailableTime } from '@/utils/requests';
 import { useToast } from './ui/use-toast';
+
+const TimeIndexCheckbox = (props: { timeIndexDetail: TimeIndexDetail }) => {
+  return (
+    <Checkbox
+      className="pt-8 pb-2 w-full"
+      value={`${props.timeIndexDetail.timeIndex}`}
+      isDisabled={props.timeIndexDetail.uid !== ''}
+    >
+      <div className="chechbox-wrapper flex flex-row w-full gap-10">
+        <div className="time w-36 flex flex-col gap-1 pl-6">
+          <p className=" text-sm text-gray-400">时段</p>
+          {availableTime[props.timeIndexDetail.timeIndex]}
+        </div>
+        <div className="status flex flex-col gap-1">
+          <p className=" text-sm text-gray-400">时段状态</p>
+          <p>{props.timeIndexDetail.uid === '' ? '空闲' : '占用'}</p>
+        </div>
+        <div className="user-info pl-6 flex flex-col gap-1">
+          <p className=" text-sm text-gray-400">使用人</p>
+          <p>
+            {props.timeIndexDetail.uid}-{props.timeIndexDetail.name}
+          </p>
+        </div>
+      </div>
+    </Checkbox>
+  );
+};
 
 export function ApplyForm({ eqId }) {
   const {
@@ -36,7 +65,7 @@ export function ApplyForm({ eqId }) {
     console.log(data);
     const req = {
       ...data,
-      timeIndex: parseInt(data.timeIndex),
+      timeIndex: groupSelected.map((index) => parseInt(index)),
     };
     applyEquipment(req)
       .then((res) => {
@@ -55,7 +84,9 @@ export function ApplyForm({ eqId }) {
   register('uid', { required: true });
   console.log(errors);
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [availableTimeIndex, setAvailableTimeIndex] = useState<number[]>([]);
+  const [availableTimeIndex, setAvailableTimeIndex] = useState<TimeIndexDetail[]>([]);
+  const [groupSelected, setGroupSelected] = useState([]);
+
   const uid = useSelector((state) => state.uid);
   useEffect(() => {
     setValue('uid', uid);
@@ -68,23 +99,13 @@ export function ApplyForm({ eqId }) {
     return timeIndexDetail.uid === '' && timeIndexDetail.name === '';
   };
 
-  const filterAvailableTime = (timeIndexes: TimeIndexDetail[]) => {
-    const ret: number[] = [];
-    timeIndexes.forEach((timeIndexDetail) => {
-      if (judgeAvailableTime(timeIndexDetail)) {
-        ret.push(timeIndexDetail.timeIndex);
-      }
-    });
-    console.log('ac indexed', ret);
-    return ret;
-  };
-
   useEffect(() => {
     queryAvailableTime({
       eqId: eqId,
       applyDate: dayjs(date?.toDateString()).format('YYYY-MM-DD'),
     }).then((res) => {
-      setAvailableTimeIndex(filterAvailableTime(res.timeIndexes));
+      setAvailableTimeIndex(res.timeIndexes);
+      setGroupSelected([]);
     });
   }, [date]);
 
@@ -144,22 +165,34 @@ export function ApplyForm({ eqId }) {
           control={control}
           defaultValue="0"
           render={({ field }) => (
-            <Select
-              label="使用时间段"
-              value={field.value}
-              onChange={(e) => {
-                field.onChange(e.target.value);
+            // <Select
+            //   label="使用时间段"
+            //   value={field.value}
+            //   onChange={(e) => {
+            //     field.onChange(e.target.value);
+            //   }}
+            // >
+            //   {availableTime.map((time, index) => {
+            //     if (availableTimeIndex.includes(index))
+            //       return (
+            //         <SelectItem key={`${index}`} value={`${index}`}>
+            //           {time}
+            //         </SelectItem>
+            //       );
+            //   })}
+            // </Select>
+            <CheckboxGroup
+              value={groupSelected}
+              onChange={setGroupSelected}
+              className="pl-5 overflow-scroll w-full"
+              style={{
+                height: '50vh',
               }}
             >
-              {availableTime.map((time, index) => {
-                if (availableTimeIndex.includes(index))
-                  return (
-                    <SelectItem key={`${index}`} value={`${index}`}>
-                      {time}
-                    </SelectItem>
-                  );
+              {availableTimeIndex.map((time, index) => {
+                return <TimeIndexCheckbox key={`${index}`} timeIndexDetail={time} {...field} />;
               })}
-            </Select>
+            </CheckboxGroup>
           )}
         />
         <Divider />
