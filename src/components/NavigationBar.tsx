@@ -12,7 +12,7 @@ export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
   const { uid, role } = props;
 
   return (
-    <Navbar position="static" className="select-none fixed bg-primary/70">
+    <Navbar position="static" className="select-none fixed bg-primary/10">
       <NavbarContent className="">
         <NavbarBrand className=" text-xl font-semibold flex gap-2">
           <img
