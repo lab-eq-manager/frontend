@@ -19,7 +19,7 @@ import {
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { availableTime } from '@/types';
-import { applyEquipment, queryAvailableTime } from '@/utils/requests';
+import { TimeIndexDetail, applyEquipment, queryAvailableTime } from '@/utils/requests';
 import { useToast } from './ui/use-toast';
 
 export function ApplyForm({ eqId }) {
@@ -62,19 +62,36 @@ export function ApplyForm({ eqId }) {
     setValue('eqId', eqId);
   }, [uid]);
 
+  // 新改动，以前只返回可用时段的 timeIndex[]
+  // 现在返回所有时段的 TimeIndexDetail[]
+  const judgeAvailableTime = (timeIndexDetail: TimeIndexDetail) => {
+    return timeIndexDetail.uid === '' && timeIndexDetail.name === '';
+  };
+
+  const filterAvailableTime = (timeIndexes: TimeIndexDetail[]) => {
+    const ret: number[] = [];
+    timeIndexes.forEach((timeIndexDetail) => {
+      if (judgeAvailableTime(timeIndexDetail)) {
+        ret.push(timeIndexDetail.timeIndex);
+      }
+    });
+    console.log('ac indexed', ret);
+    return ret;
+  };
+
   useEffect(() => {
     queryAvailableTime({
       eqId: eqId,
       applyDate: dayjs(date?.toDateString()).format('YYYY-MM-DD'),
     }).then((res) => {
-      setAvailableTimeIndex(res.timeIndex);
+      setAvailableTimeIndex(filterAvailableTime(res.timeIndexes));
     });
   }, [date]);
 
   return (
     <Card className="p-3 w-full">
       <CardHeader className=" flex items-center justify-center font-semibold text-lg">
-        设备申请
+        填写申请表
       </CardHeader>
       <CardBody className="flex gap-4">
         <Controller

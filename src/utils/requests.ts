@@ -179,8 +179,14 @@ export interface QueryAvailableTimeRequest {
   applyDate: string;
 }
 
+export interface TimeIndexDetail {
+  timeIndex: number;
+  uid: string;
+  name: string;
+}
+
 export interface QueryAvailableTimeResponse {
-  timeIndex: number[];
+  timeIndexes: TimeIndexDetail[];
 }
 
 export const queryAvailableTime = async (data: QueryAvailableTimeRequest) => {
