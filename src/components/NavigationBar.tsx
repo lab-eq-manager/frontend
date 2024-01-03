@@ -41,7 +41,7 @@ export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
                   <Link to="/manage/user">用户管理</Link>
                 </NavbarItem>
                 <NavbarItem>
-                  <Link to="/manage/approval">预约审批</Link>
+                  <Link to="/manage/approval">待处理申请</Link>
                 </NavbarItem>
                 <NavbarItem>
                   <Link to="/manage/lab">实验室管理</Link>

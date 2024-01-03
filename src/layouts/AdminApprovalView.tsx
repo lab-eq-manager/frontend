@@ -32,7 +32,7 @@ export const AdminApprovalView: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
-      <div className="title font-semibold text-2xl">申请列表</div>
+      <div className="title font-semibold text-2xl">待处理申请</div>
       <div className="w-full flex flex-col items-center gap-3">
         {eqData && eqData?.length !== 0 && (
           <ApprovalTable eqData={eqData} canCustomColumn getData={() => getData()} />
