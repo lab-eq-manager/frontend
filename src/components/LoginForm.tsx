@@ -2,8 +2,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { Input, Card, Button, CardBody, CardHeader } from '@nextui-org/react';
 import { useToast } from './ui/use-toast';
 import { store } from '@/utils/store';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { dispatch } = store;
   const {
@@ -34,6 +36,7 @@ export const LoginForm = () => {
               title: '登录成功',
               description: '欢迎回来',
             });
+            navigate('/equipments');
           })
           .catch((err) => {
             console.log('err', err);
