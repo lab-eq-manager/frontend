@@ -21,7 +21,7 @@ import {
 import { ApplyEquipmentRequest, applyStatusMap, availableTime, equipmentStatusMap } from '@/types';
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AdminApprovalInfo, adminApproval, adminReject, getExcel } from '@/utils/requests';
 import { toast } from './ui/use-toast';
 import axios from 'axios';
@@ -39,6 +39,7 @@ const columns = [
   { name: '使用日期', uid: 'applyDate' },
   { name: '使用时段', uid: 'timeIndex' },
   { name: '申请处理日期', uid: 'approvalTime' },
+  { name: '审批人', uid: 'approvalUser' },
   { name: '申请状态', uid: 'status' },
   { name: '操作', uid: 'actions' },
 ];
@@ -55,7 +56,7 @@ export enum AdminApprovalTableColumn {
   ACTIONS = 'actions',
 }
 
-export const ApprovalTable = ({
+export const HistoryApprovalTable = ({
   eqData,
   showColumn,
   canCustomColumn,
@@ -68,13 +69,14 @@ export const ApprovalTable = ({
 }) => {
   const INITIAL_VISIBLE_COLUMNS = showColumn || [
     'Name',
-    'eqId',
-    'applyDate',
     'timeIndex',
-    'actions',
+    'approvalTime',
+    'approvalUser',
   ];
 
   const navigate = useNavigate();
+
+  const eqId = useParams<{ eqId: string }>().eqId;
 
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
 
@@ -194,6 +196,14 @@ export const ApprovalTable = ({
               ))}
             </DropdownMenu>
           </Dropdown>
+          <Button
+            color="primary"
+            onClick={() => {
+              getData();
+            }}
+          >
+            查询
+          </Button>
         </div>
       )}
 

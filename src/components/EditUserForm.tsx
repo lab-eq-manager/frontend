@@ -20,6 +20,7 @@ import {
   UpdateUerPasswordRequest,
   UpdateUserRequest,
   UserInfoChangeByAdminReq,
+  getLabList,
   getUserInfo,
   logout,
   resetUserPassword,
@@ -44,8 +45,21 @@ export function EditUserForm({ uid }: { uid: string }) {
     handleSubmit,
     getValues,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>();
+
+  // 可用实验室id
+  const [labIdList, setLabIdList] = useState<string[]>([]);
+  const [labIdSelected, setLabIdSelected] = useState(new Set<string>());
+
+  useEffect(() => {
+    getLabList().then((res) => {
+      setLabIdList(res.map((lab) => lab.labId));
+    });
+  }, []);
+
+  const editUserRole = watch('role');
 
   const getUserInfoByUid = () => {
     getUserInfo({ uid })
@@ -69,7 +83,15 @@ export function EditUserForm({ uid }: { uid: string }) {
 
   const onSubmit = (data: FormData) => {
     console.log(data);
-    userInfoChangeByAdmin(data as UserInfoChangeByAdminReq)
+    if (!labIdSelected.size) {
+      toast({
+        title: '请至少选择一个实验室',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    userInfoChangeByAdmin({ ...data, lab: Array.from(labIdSelected) } as UserInfoChangeByAdminReq)
       .then((res) => {
         toast({
           title: '修改成功',
@@ -128,6 +150,35 @@ export function EditUserForm({ uid }: { uid: string }) {
               })}
             </Select>
           )}
+        />
+        <Controller
+          name="labId"
+          control={control}
+          render={({ field }) => {
+            return (
+              <Select
+                selectionMode="multiple"
+                label="所属实验室"
+                selectedKeys={labIdSelected}
+                onSelectionChange={setLabIdSelected}
+                isRequired
+              >
+                {labIdList?.length ? (
+                  labIdList.map((labId) => {
+                    return (
+                      <SelectItem key={labId} value={labId}>
+                        {labId}
+                      </SelectItem>
+                    );
+                  })
+                ) : (
+                  <SelectItem key={''} value={''} isDisabled className=" text-danger">
+                    暂无实验室，请前往实验室管理添加后再操作
+                  </SelectItem>
+                )}
+              </Select>
+            );
+          }}
         />
         <Controller
           name="name"

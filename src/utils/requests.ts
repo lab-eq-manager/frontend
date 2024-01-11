@@ -306,6 +306,7 @@ export interface AdminApprovalInfo {
   applyReason: string;
   timeIndex: number;
   status: EquipmentStatus;
+  Name: string;
 }
 
 export interface GetAdminApprovalListResponse {

@@ -69,12 +69,7 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
             flexShrink: 0,
           }}
         >
-          <Image
-            src={equipment.imgUrl || 'https://picsum.photos/200/200'}
-            width={200}
-            height={300}
-            isZoomed
-          />
+          <Image src={equipment.imgUrl || '/none.png'} width={200} height={300} isZoomed />
         </div>
         <div className="texts-wrapper flex-grow gap-2 flex flex-col">
           <div className="title text-xl">{equipment.name}</div>
@@ -92,16 +87,6 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
       </CardBody>
       {showButton && (
         <CardFooter className="flex flex-row justify-end gap-2 px-4 bg-background/60">
-          {showManageButton && (
-            <Button
-              variant="flat"
-              onClick={() => {
-                navigate(`/equipment/edit/${encodeURIComponent(equipment.eqId)}`);
-              }}
-            >
-              编辑设备信息
-            </Button>
-          )}
           <Button
             variant="flat"
             onClick={() => {
@@ -110,15 +95,40 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
           >
             查看详情
           </Button>
-          <Button
-            color="primary"
-            isDisabled={equipment.status !== EquipmentStatus.AVAILABLE}
-            onClick={() => {
-              navigate(`/apply/${encodeURIComponent(equipment.eqId)}`);
-            }}
-          >
-            申请使用
-          </Button>
+          {showManageButton && (
+            <>
+              <Button color="primary" variant="flat">
+                导出此设备 Excel
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate(`/manage/history-approval/${encodeURIComponent(equipment.eqId)}`);
+                }}
+              >
+                查询审批记录
+              </Button>
+              <Button
+                color="primary"
+                onClick={() => {
+                  navigate(`/equipment/edit/${encodeURIComponent(equipment.eqId)}`);
+                }}
+              >
+                编辑设备信息
+              </Button>
+            </>
+          )}
+
+          {!showManageButton && (
+            <Button
+              color="primary"
+              isDisabled={equipment.status !== EquipmentStatus.AVAILABLE}
+              onClick={() => {
+                navigate(`/apply/${encodeURIComponent(equipment.eqId)}`);
+              }}
+            >
+              申请使用
+            </Button>
+          )}
         </CardFooter>
       )}
     </Card>

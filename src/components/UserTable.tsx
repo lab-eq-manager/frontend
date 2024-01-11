@@ -102,6 +102,16 @@ export const UserTable = ({
             </Dropdown>
           </div>
         );
+      case 'lab':
+        return (
+          <div className="flex gap-1">
+            {cellValue
+              ?.filter((lab) => lab !== '')
+              ?.map((lab) => (
+                <Chip key={lab}>{lab}</Chip>
+              ))}
+          </div>
+        );
       default:
         return cellValue;
     }

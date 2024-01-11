@@ -20,6 +20,7 @@ import { AddUserView } from './layouts/AddUserView';
 import { LabListView } from './layouts/LabListView';
 import { AddLabView } from './layouts/AddLabView';
 import { AdminApprovalView } from './layouts/AdminApprovalView';
+import { HistoryView } from './layouts/HistoryView';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ export const App: React.FC = () => {
               <Route path="/manage/lab/add" element={<AddLabView />} />
               <Route path="/manage/lab/edit/:labId" element={<EditUserInfoView />} />
               <Route path="/manage/approval" element={<AdminApprovalView />} />
+              <Route path="/manage/history-approval/:eqId" element={<HistoryView />} />
             </Routes>
           ) : (
             <Routes>

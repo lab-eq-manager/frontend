@@ -12,12 +12,15 @@ import {
   Button,
   Divider,
   Chip,
+  CheckboxGroup,
+  Checkbox,
 } from '@nextui-org/react';
 import { EquipmentStatus, equipmentStatusMap } from '@/types';
 import {
   UpdateEquipmentRequest,
   addEquipment,
   getEquipmentDetail,
+  getLabList,
   updateEquipment,
   uploadFile,
 } from '@/utils/requests';
@@ -101,6 +104,16 @@ export const EquipmentForm: React.FC<{ eqId?: string }> = (props) => {
   const { eqId } = props;
   const navigate = useNavigate();
 
+  // 可用实验室id
+  const [labIdList, setLabIdList] = React.useState<string[]>([]);
+  const [labIdSelected, setLabIdSelected] = React.useState<string[]>([]);
+
+  useEffect(() => {
+    getLabList().then((res) => {
+      setLabIdList(res.map((lab) => lab.labId));
+    });
+  }, []);
+
   const onSubmit = (data: FormData) => {
     const req: UpdateEquipmentRequest = {
       ...data,
@@ -148,6 +161,7 @@ export const EquipmentForm: React.FC<{ eqId?: string }> = (props) => {
           setValue('eqId', res.eqId);
           setValue('name', res.name);
           setValue('labId', res.labId);
+          setLabIdSelected([res.labId]);
           setValue('info', res.info);
           setValue('priceInfo', res.priceInfo);
           setValue('imgUrl', res.imgUrl);
@@ -191,7 +205,31 @@ export const EquipmentForm: React.FC<{ eqId?: string }> = (props) => {
         <Controller
           name="labId"
           control={control}
-          render={({ field }) => <Input isRequired {...field} label="所属实验室" />}
+          render={({ field }) => {
+            return (
+              <Select
+                label="所属实验室"
+                value={labIdSelected}
+                onChange={field.onChange}
+                isRequired
+                selectedKeys={[`${field.value}`]}
+              >
+                {labIdList?.length ? (
+                  labIdList.map((labId) => {
+                    return (
+                      <SelectItem key={labId} value={labId}>
+                        {labId}
+                      </SelectItem>
+                    );
+                  })
+                ) : (
+                  <SelectItem key={''} value={''} isDisabled className=" text-danger">
+                    暂无实验室，请前往实验室管理添加后再操作
+                  </SelectItem>
+                )}
+              </Select>
+            );
+          }}
         />
         <Controller
           name="status"

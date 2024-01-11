@@ -7,11 +7,16 @@ import { getEquipmentList } from '@/utils/requests';
 import { useToast } from '@/components/ui/use-toast';
 import { useSelector } from 'react-redux';
 
-const EquipmentList: React.FC<{ equipments: Equipment[] }> = (props) => {
+const EquipmentList: React.FC<{ equipments: Equipment[]; isAdmin: boolean }> = (props) => {
   return (
     <div className="w-full flex flex-col justify-center items-center gap-4">
       {props.equipments.map((equipment) => (
-        <EquipmentCard key={equipment.eqId} equipment={equipment} showButton showManageButton />
+        <EquipmentCard
+          key={equipment.eqId}
+          equipment={equipment}
+          showButton
+          showManageButton={props.isAdmin}
+        />
       ))}
     </div>
   );
@@ -82,7 +87,7 @@ export const Equipments: React.FC = () => {
         )}
       </div>
 
-      <EquipmentList equipments={filteredEquipments} />
+      <EquipmentList equipments={filteredEquipments} isAdmin={isAdmin} />
     </div>
   );
 };
