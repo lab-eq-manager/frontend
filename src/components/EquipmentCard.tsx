@@ -11,6 +11,7 @@ import {
 
 import { Equipment, EquipmentStatus } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { getExcel } from '@/utils/requests';
 
 interface EquipmentCardProps {
   equipment: Equipment;
@@ -97,7 +98,13 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
           </Button>
           {showManageButton && (
             <>
-              <Button color="primary" variant="flat">
+              <Button
+                color="primary"
+                variant="flat"
+                onClick={() => {
+                  getExcel({ eqId: equipment.eqId });
+                }}
+              >
                 导出此设备 Excel
               </Button>
               <Button

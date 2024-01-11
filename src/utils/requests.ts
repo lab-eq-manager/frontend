@@ -360,9 +360,36 @@ export const uploadFile = async (data: UploadFileRequest) => {
   return response.data.data;
 };
 
-export const getExcel = async () => {
-  const response = await axios.get('/api/manage/log/list').catch((error) => {
-    throw error.response.data;
-  });
+interface GetExcelRequest {
+  labId?: string;
+  eqId?: string;
+}
+
+export const getExcel = async (data: GetExcelRequest) => {
+  const response = await axios
+    .post('/api/manage/log/list', {
+      ...data,
+    })
+    .catch((error) => {
+      throw error.response.data;
+    });
+  return response.data.data;
+};
+
+interface GetApprovalHistoryRequest {
+  eqId: string;
+  date: string;
+  pageNo: number;
+  pageSize: number;
+}
+
+export const getApprovalHistory = async (data: GetApprovalHistoryRequest) => {
+  const response = await axios
+    .post('/api/manage/apply/history', {
+      ...data,
+    })
+    .catch((error) => {
+      throw error.response.data;
+    });
   return response.data.data;
 };

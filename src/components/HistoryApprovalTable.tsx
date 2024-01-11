@@ -25,6 +25,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AdminApprovalInfo, adminApproval, adminReject, getExcel } from '@/utils/requests';
 import { toast } from './ui/use-toast';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -39,12 +40,12 @@ const columns = [
   { name: '使用日期', uid: 'applyDate' },
   { name: '使用时段', uid: 'timeIndex' },
   { name: '申请处理日期', uid: 'approvalTime' },
-  { name: '审批人', uid: 'approvalUser' },
+  { name: '审批人', uid: 'approvalName' },
   { name: '申请状态', uid: 'status' },
   { name: '操作', uid: 'actions' },
 ];
 
-export enum AdminApprovalTableColumn {
+export enum AdminApprovalHistoryTableColumn {
   APPLY_ID = 'applyId',
   EQ_ID = 'eqId',
   UID = 'uid',
@@ -52,6 +53,8 @@ export enum AdminApprovalTableColumn {
   APPLY_DATE = 'applyDate',
   TIME_INDEX = 'timeIndex',
   APPROVAL_TIME = 'approvalTime',
+  APPROVAL_NAME = 'approvalName',
+  APPLIER_NAME = 'Name',
   STATUS = 'status',
   ACTIONS = 'actions',
 }
@@ -63,7 +66,7 @@ export const HistoryApprovalTable = ({
   getData,
 }: {
   eqData: AdminApprovalInfo[];
-  showColumn?: AdminApprovalTableColumn[];
+  showColumn?: AdminApprovalHistoryTableColumn[];
   canCustomColumn?: boolean;
   getData: () => void;
 }) => {
@@ -71,7 +74,8 @@ export const HistoryApprovalTable = ({
     'Name',
     'timeIndex',
     'approvalTime',
-    'approvalUser',
+    'approvalName',
+    'status',
   ];
 
   const navigate = useNavigate();
@@ -105,6 +109,8 @@ export const HistoryApprovalTable = ({
         return <div>{getTimeIndexShow(cellValue)}</div>;
       case 'status':
         return <Chip>{applyStatusMap[cellValue]}</Chip>;
+      case 'approvalTime':
+        return <div>{dayjs(Date(cellValue)).format('YYYY-MM-DD HH:mm:ss')}</div>;
       case 'actions':
         return (
           <div className="relative flex justify-end items-center gap-2">

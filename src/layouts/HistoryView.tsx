@@ -1,6 +1,10 @@
 import { ApprovalTable } from '@/components/ApprovalTable';
 import { useToast } from '@/components/ui/use-toast';
-import { GetAdminApprovalListResponse, getAdminApprovalList } from '@/utils/requests';
+import {
+  GetAdminApprovalListResponse,
+  getAdminApprovalList,
+  getApprovalHistory,
+} from '@/utils/requests';
 import { Pagination, PaginationItem, PaginationCursor } from '@nextui-org/react';
 import { useParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
@@ -64,9 +68,14 @@ export const HistoryView: React.FC = () => {
     console.log(dayjs(date?.toDateString() || new Date()).format('YYYY-MM-DD'));
     console.log('query', { pageNo: page, pageSize: pageSize });
 
-    getAdminApprovalList({ pageNo: page, pageSize: pageSize })
+    getApprovalHistory({
+      date: dayjs(date?.toDateString() || new Date()).format('YYYY-MM-DD'),
+      eqId: eqId,
+      pageNo: page,
+      pageSize: pageSize,
+    })
       .then((res: GetAdminApprovalListResponse) => {
-        setEqData(res.applies);
+        setEqData(res);
         setPageTotal(res.length);
       })
       .catch((err) => {
@@ -80,7 +89,7 @@ export const HistoryView: React.FC = () => {
 
   useEffect(() => {
     getData();
-  }, [page, pageSize]);
+  }, [page, pageSize, date]);
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">

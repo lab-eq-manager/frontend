@@ -71,6 +71,9 @@ export function EditUserForm({ uid }: { uid: string }) {
         setValue('leader', data.leader);
         setValue('phoneNumber', data.phoneNumber);
         setValue('role', data.role);
+        if (data.lab) {
+          setLabIdSelected(new Set(data.lab));
+        }
       })
       .catch((err) => {
         toast({
@@ -91,7 +94,10 @@ export function EditUserForm({ uid }: { uid: string }) {
       return;
     }
 
-    userInfoChangeByAdmin({ ...data, lab: Array.from(labIdSelected) } as UserInfoChangeByAdminReq)
+    userInfoChangeByAdmin({
+      ...data,
+      lab: Array.from(labIdSelected).filter((labId) => labIdList.includes(labId)),
+    } as UserInfoChangeByAdminReq)
       .then((res) => {
         toast({
           title: '修改成功',
