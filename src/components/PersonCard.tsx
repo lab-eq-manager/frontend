@@ -95,6 +95,7 @@ interface FormData {
   leader: string;
   phoneNumber: string;
   role: number;
+  lab?: string[];
 }
 
 export function PersonCard({ uid }: { uid: string }) {
@@ -110,13 +111,14 @@ export function PersonCard({ uid }: { uid: string }) {
   const getUserInfoByUid = () => {
     getUserInfo({ uid })
       .then((res) => {
-        console.log(res);
+        console.log('===', res, res.data.lab);
         const { data } = res;
         setValue('uid', uid);
         setValue('name', data.name);
         setValue('leader', data.leader);
         setValue('phoneNumber', data.phoneNumber);
         setValue('role', data.role);
+        setValue('lab', data.lab);
       })
       .catch((err) => {
         toast({
@@ -187,6 +189,11 @@ export function PersonCard({ uid }: { uid: string }) {
               })}
             </Select>
           )}
+        />
+        <Controller
+          name="lab"
+          control={control}
+          render={({ field }) => <Input label="实验室" disabled {...field} isDisabled />}
         />
         <Divider />
         <div className="title font-semibold p-1">个人资料</div>

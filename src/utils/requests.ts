@@ -53,6 +53,7 @@ export interface getUserInfoResponse {
   leader: string;
   phoneNum: string;
   role: UserRole;
+  lab?: string[];
 }
 
 export const getUserInfo = async (data: getUserInfoRequest) => {

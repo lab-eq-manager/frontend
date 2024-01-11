@@ -43,9 +43,11 @@ export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
                 <NavbarItem>
                   <Link to="/manage/approval">待处理申请</Link>
                 </NavbarItem>
-                <NavbarItem>
-                  <Link to="/manage/lab">实验室管理</Link>
-                </NavbarItem>
+                {role === UserRole.SUPER_ADMIN && (
+                  <NavbarItem>
+                    <Link to="/manage/lab">实验室管理</Link>
+                  </NavbarItem>
+                )}
               </>
             )}
             <NavbarItem>
