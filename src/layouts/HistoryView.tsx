@@ -74,7 +74,7 @@ export const HistoryView: React.FC = () => {
       pageNo: page,
       pageSize: pageSize,
     })
-      .then((res: GetAdminApprovalListResponse) => {
+      .then((res: any) => {
         setEqData(res);
         setPageTotal(res.length);
       })

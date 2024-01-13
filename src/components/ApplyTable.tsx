@@ -71,6 +71,11 @@ export const ApplyTable = ({
   const renderCell = useCallback((applyData: ApplyEquipmentRequest, columnKey: React.Key) => {
     const cellValue = applyData[columnKey as keyof ApplyEquipmentRequest];
 
+    const getTimeIndexShow = (timeIndex: string) => {
+      const timeIndexArr = timeIndex.substring(1, timeIndex.length - 1).split(',');
+      return timeIndexArr.map((index) => availableTime[index as number]).join(' / ');
+    };
+
     switch (columnKey) {
       case 'uid':
       case 'eqId':
@@ -78,7 +83,8 @@ export const ApplyTable = ({
       case 'applyTime':
         return <div>{cellValue}</div>;
       case 'timeIndex':
-        return <div>{availableTime[cellValue]}</div>;
+        // return <div>{availableTime[cellValue]}</div>;
+        return <div>{getTimeIndexShow(cellValue)}</div>;
       case 'status':
         return <Chip>{applyStatusMap[cellValue]}</Chip>;
       case 'actions':

@@ -56,7 +56,7 @@ export enum AdminApprovalHistoryTableColumn {
   APPROVAL_NAME = 'approvalName',
   APPLIER_NAME = 'Name',
   STATUS = 'status',
-  ACTIONS = 'actions',
+  // ACTIONS = 'actions',
 }
 
 export const HistoryApprovalTable = ({

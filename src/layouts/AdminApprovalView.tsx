@@ -18,11 +18,13 @@ export const AdminApprovalView: React.FC = () => {
         setPageTotal(res.length);
       })
       .catch((err) => {
-        toast({
-          title: '获取申请列表失败',
-          description: err.message,
-          variant: 'destructive',
-        });
+        if (err.error_code !== 40000) {
+          toast({
+            title: '获取申请列表失败',
+            description: err.message,
+            variant: 'destructive',
+          });
+        }
       });
   };
 
@@ -34,8 +36,10 @@ export const AdminApprovalView: React.FC = () => {
     <div className="flex flex-col items-center gap-8 w-full">
       <div className="title font-semibold text-2xl">待处理申请</div>
       <div className="w-full flex flex-col items-center gap-3">
-        {eqData && eqData?.length !== 0 && (
+        {eqData && eqData?.length !== 0 ? (
           <ApprovalTable eqData={eqData} canCustomColumn getData={() => getData()} />
+        ) : (
+          <div className="text-gray-400">暂无待处理申请</div>
         )}
         <Pagination
           page={page}
