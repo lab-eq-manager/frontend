@@ -29,7 +29,7 @@ export const NavigationBar: React.FC<NavagationBarProps> = (props) => {
         {uid ? (
           <>
             <NavbarItem>
-              <Link to="/equipments">器材列表</Link>
+              <Link to="/equipments">设备列表</Link>
             </NavbarItem>
             {role !== UserRole.ADMIN && role !== UserRole.SUPER_ADMIN ? (
               <NavbarItem>

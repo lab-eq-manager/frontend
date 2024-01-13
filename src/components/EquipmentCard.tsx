@@ -83,7 +83,11 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
             <Chip variant="flat">设备号 {equipment.eqId}</Chip>
             <Chip variant="flat">所属实验室 {equipment.labId}</Chip>
           </div>
-          <div className="text-sm text-gray-600 p-1">{equipment.info}</div>
+          <div className="text-sm text-gray-600 p-1">
+            {equipment.info.split('\n').map((line, index) => (
+              <div key={index}>{line}</div>
+            ))}
+          </div>
           <div className="text-sm text-gray-600 p-1">{equipment.priceInfo}</div>
         </div>
       </CardBody>
