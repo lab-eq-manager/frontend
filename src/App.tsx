@@ -11,7 +11,7 @@ import { ApplyView } from './layouts/ApplyView';
 import { EquipmentView } from './layouts/EquipmentView';
 import { Toaster } from './components/ui/toaster';
 import { LoginView } from './layouts/LoginView';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { EditEquipmentView } from './layouts/EditEquipmentView';
 import { AddEquipmentView } from './layouts/AddEquipmentView';
 import { UserListView } from './layouts/UserListView';
@@ -21,11 +21,43 @@ import { LabListView } from './layouts/LabListView';
 import { AddLabView } from './layouts/AddLabView';
 import { AdminApprovalView } from './layouts/AdminApprovalView';
 import { HistoryView } from './layouts/HistoryView';
+import { useEffect, useState } from 'react';
+import { getUserInfo } from './utils/requests';
+import { store } from '@/utils/store';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
-  const uid = useSelector((state) => state.uid);
-  const role = useSelector((state) => state.role);
+  // let uid = useSelector((state) => state.uid);
+  // let role = useSelector((state) => state.role);
+  const [uid, setUid] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+
+  const uidFromState = useSelector((state) => state.uid);
+  const roleFromState = useSelector((state) => state.role);
+
+  const { dispatch } = store;
+
+  useEffect(() => {
+    if (uidFromState) {
+      setUid(uidFromState);
+    }
+  }, [uidFromState]);
+
+  useEffect(() => {
+    if (roleFromState) {
+      setRole(roleFromState);
+    }
+  }, [roleFromState]);
+
+  useEffect(() => {
+    if (!uidFromState) {
+      // 检查localStorage
+      const uidLocal = localStorage.getItem('uid');
+      if (uidLocal) {
+        dispatch.uid.loginFromTokenAsync(uidLocal);
+      }
+    }
+  }, []);
 
   return (
     <NextUIProvider navigate={navigate}>
@@ -42,6 +74,7 @@ export const App: React.FC = () => {
               <Route path="/account" element={<PersonView />} />
               <Route path="/approval" element={<Approval />} />
               <Route path="/equipments" element={<Equipments />} />
+              <Route path="*" element={<Equipments />} />
               <Route path="/apply/:eqId" element={<ApplyView />} />
               <Route path="/detail/:eqId" element={<EquipmentView />} />
               <Route path="/equipment/edit/:eqId" element={<EditEquipmentView />} />

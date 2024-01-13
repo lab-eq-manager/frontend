@@ -26,8 +26,16 @@ export const uid = createModel<RootModel>()({
       await login(payload).then((res) => {
         dispatch.uid.setUid(payload.uid);
         console.log('uid', payload.uid);
+        localStorage.setItem('uid', payload.uid);
       });
       await getUserInfo({ uid: payload.uid }).then((res) => {
+        console.log('role', res);
+        dispatch.role.setRole(res.data.role);
+      });
+    },
+    async loginFromTokenAsync(payload: string) {
+      dispatch.uid.setUid(payload);
+      await getUserInfo({ uid: payload }).then((res) => {
         console.log('role', res);
         dispatch.role.setRole(res.data.role);
       });

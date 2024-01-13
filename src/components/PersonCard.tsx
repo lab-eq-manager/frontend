@@ -231,6 +231,9 @@ export function PersonCard({ uid }: { uid: string }) {
           fullWidth
           onClick={async () => {
             logout().then(() => {
+              // clear localstorage
+              localStorage.removeItem('uid');
+              localStorage.removeItem('role');
               window.location.reload();
             });
           }}
