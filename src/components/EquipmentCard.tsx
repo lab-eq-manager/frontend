@@ -12,6 +12,7 @@ import {
 import { Equipment, EquipmentStatus } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { getExcel } from '@/utils/requests';
+import { toast, useToast } from './ui/use-toast';
 
 interface EquipmentCardProps {
   equipment: Equipment;
@@ -102,7 +103,22 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
                 color="primary"
                 variant="flat"
                 onClick={() => {
-                  getExcel({ eqId: equipment.eqId });
+                  getExcel({ eqId: equipment.eqId })
+                    .then((res) => {
+                      if (res?.data) {
+                        window.open(res?.data?.fileUrl, '_blank');
+                        toast({
+                          title: '导出成功',
+                        });
+                      }
+                    })
+                    .catch((err) => {
+                      toast({
+                        title: '导出失败',
+                        description: err.message,
+                        variant: 'destructive',
+                      });
+                    });
                 }}
               >
                 导出此设备 Excel
