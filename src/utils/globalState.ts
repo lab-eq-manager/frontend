@@ -35,10 +35,16 @@ export const uid = createModel<RootModel>()({
     },
     async loginFromTokenAsync(payload: string) {
       dispatch.uid.setUid(payload);
-      await getUserInfo({ uid: payload }).then((res) => {
-        console.log('role', res);
-        dispatch.role.setRole(res.data.role);
-      });
+      await getUserInfo({ uid: payload })
+        .then((res) => {
+          console.log('role', res);
+          dispatch.role.setRole(res.data.role);
+        })
+        .catch((err) => {
+          alert('登录过期，请重新登录');
+          window.location.href = '/login';
+          console.log(err);
+        });
     },
   }),
 });
