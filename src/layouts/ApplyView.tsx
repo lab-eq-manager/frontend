@@ -23,9 +23,7 @@ export const ApplyView: React.FC = () => {
   return (
     <div className="apply-wrapper flex flex-col items-center gap-8 w-full">
       <div className="title font-semibold text-2xl">申请设备</div>
-      {equipment && (
-        <EquipmentCard equipment={equipment} showButton={false} showManageButton={false} />
-      )}
+      {<EquipmentCard equipment={mockEquipments[0]} showButton={false} showManageButton={false} />}
       <ApplyForm eqId={eqId} />
     </div>
   );

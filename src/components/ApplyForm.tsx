@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { availableTime } from '@/types';
 import { TimeIndexDetail, applyEquipment, queryAvailableTime } from '@/utils/requests';
 import { useToast } from './ui/use-toast';
+import { mockTimeIndex } from '@/utils/mockData';
 
 const TimeIndexCheckbox = (props: { timeIndexDetail: TimeIndexDetail }) => {
   return (
@@ -103,10 +104,19 @@ export function ApplyForm({ eqId }) {
     queryAvailableTime({
       eqId: eqId,
       applyDate: dayjs(date?.toDateString()).format('YYYY-MM-DD'),
-    }).then((res) => {
-      setAvailableTimeIndex(res.timeIndexes);
-      setGroupSelected([]);
-    });
+    })
+      .then((res) => {
+        setAvailableTimeIndex(res.timeIndexes);
+        setGroupSelected([]);
+      })
+      .catch((err) => {
+        toast({
+          title: '获取可用时段失败',
+          description: err.message,
+          variant: 'destructive',
+        });
+        setAvailableTimeIndex(mockTimeIndex);
+      });
   }, [date]);
 
   return (

@@ -21,11 +21,18 @@ import { LabListView } from './layouts/LabListView';
 import { AddLabView } from './layouts/AddLabView';
 import { AdminApprovalView } from './layouts/AdminApprovalView';
 import { HistoryView } from './layouts/HistoryView';
+import { UserRole } from './types';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
-  const uid = useSelector((state) => state.uid);
-  const role = useSelector((state) => state.role);
+  // const uid = useSelector((state) => state.uid);
+  // const role = useSelector((state) => state.role);
+
+  const uid = '42024200';
+  const role = UserRole.STUDENT;
+
+  // const uid = 'admin';
+  // const role = UserRole.SUPER_ADMIN;
 
   return (
     <NextUIProvider navigate={navigate}>

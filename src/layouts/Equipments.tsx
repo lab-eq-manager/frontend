@@ -6,6 +6,7 @@ import { Button, Input } from '@nextui-org/react';
 import { getEquipmentList } from '@/utils/requests';
 import { useToast } from '@/components/ui/use-toast';
 import { useSelector } from 'react-redux';
+import { mockEquipments } from '@/utils/mockData';
 
 const EquipmentList: React.FC<{ equipments: Equipment[]; isAdmin: boolean }> = (props) => {
   return (
@@ -36,6 +37,7 @@ const useEquipmentList = () => {
           description: err.message,
           variant: 'destructive',
         });
+        setEquipments(mockEquipments);
       });
   }, []);
 
