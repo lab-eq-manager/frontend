@@ -8,11 +8,11 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8820/',
+        target: 'http://qyysbyy.ustb.edu.cn:8880/',
         changeOrigin: true,
       },
       '/file-api': {
-        target: 'http://127.0.0.1:8080/',
+        target: 'http://qyysbyy.ustb.edu.cn:8888/',
         changeOrigin: true,
       },
     },

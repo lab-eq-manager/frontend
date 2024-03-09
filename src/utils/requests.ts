@@ -236,6 +236,7 @@ export interface UserInfoChangeByAdminReq {
 }
 
 export const userInfoChangeByAdmin = async (data: UserInfoChangeByAdminReq) => {
+  console.log('==Info Change', data);
   const response = await axios.post('/api/manage/user/update', data).catch((error) => {
     throw error.response.data;
   });
