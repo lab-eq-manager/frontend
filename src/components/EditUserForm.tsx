@@ -86,6 +86,10 @@ export function EditUserForm({ uid }: { uid: string }) {
 
   const onSubmit = (data: FormData) => {
     console.log(data);
+    if (!data?.uid) {
+      // 不知道为什么线上环境拿不到 uid
+      data.uid = uid;
+    }
     if (!labIdSelected.size) {
       toast({
         title: '请至少选择一个实验室',
