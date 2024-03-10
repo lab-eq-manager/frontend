@@ -97,7 +97,15 @@ export const LoginForm = () => {
               />
             )}
           />
-          <Button color="primary" onClick={onSubmit}>
+          <Button
+            color="primary"
+            onClick={onSubmit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                onSubmit();
+              }
+            }}
+          >
             登录
           </Button>
         </form>

@@ -55,11 +55,7 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
   const navigate = useNavigate();
 
   return (
-    <Card
-      className="w-full max-w-3xl bg-background/60 dark:bg-default-100/50"
-      isFooterBlurred
-      isBlurred
-    >
+    <Card className="w-full  bg-background/60 dark:bg-default-100/50" isFooterBlurred isBlurred>
       <CardBody
         className={`flex items-start gap-6 p-6 ${fullView && 'gap-10 p-10'}`}
         style={{ flexDirection: fullView ? 'column' : 'row' }}

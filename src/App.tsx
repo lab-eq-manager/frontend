@@ -36,7 +36,7 @@ export const App: React.FC = () => {
         className="app-wrapper h-screen overflow-scroll bg-gradient-to-tr from-slate-50 to-gray-100"
         style={{ padding: '6rem 0px' }}
       >
-        <div className="in w-full max-w-3xl mx-auto">
+        <div className="in w-full max-w-4xl mx-auto">
           {uid ? (
             <Routes>
               <Route path="/account" element={<PersonView />} />
