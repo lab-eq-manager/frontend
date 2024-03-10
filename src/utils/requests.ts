@@ -395,3 +395,19 @@ export const getApprovalHistory = async (data: GetApprovalHistoryRequest) => {
     });
   return response.data.data;
 };
+
+interface CancelApplyRequest {
+  applyId: string;
+  uid: string;
+}
+
+export const cancelApply = async (data: CancelApplyRequest) => {
+  const response = await axios
+    .post('/api/apply/cancel', {
+      ...data,
+    })
+    .catch((error) => {
+      throw error.response.data;
+    });
+  return response.data.data;
+};

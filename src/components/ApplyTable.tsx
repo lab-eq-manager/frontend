@@ -18,10 +18,18 @@ import {
   DropdownMenu,
   Chip,
 } from '@nextui-org/react';
-import { ApplyEquipmentRequest, applyStatusMap, availableTime, equipmentStatusMap } from '@/types';
+import {
+  ApplyEquipmentRequest,
+  ApplyStatus,
+  applyStatusMap,
+  availableTime,
+  equipmentStatusMap,
+} from '@/types';
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { cancelApply } from '@/utils/requests';
+import { toast, useToast } from './ui/use-toast';
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -51,12 +59,21 @@ export const ApplyTable = ({
   eqData,
   showColumn,
   canCustomColumn,
+  refresh,
 }: {
   eqData: ApplyEquipmentRequest[];
   showColumn?: ApplyTableColumn[];
   canCustomColumn?: boolean;
+  refresh?: () => void;
 }) => {
-  const INITIAL_VISIBLE_COLUMNS = showColumn || ['uid', 'eqId', 'applyDate', 'timeIndex', 'status'];
+  const INITIAL_VISIBLE_COLUMNS = showColumn || [
+    'uid',
+    'eqId',
+    'applyDate',
+    'timeIndex',
+    'status',
+    'actions',
+  ];
 
   const navigate = useNavigate();
 
@@ -104,8 +121,32 @@ export const ApplyTable = ({
                 >
                   查看设备
                 </DropdownItem>
-                <DropdownItem>批准</DropdownItem>
-                <DropdownItem>拒绝</DropdownItem>
+                <DropdownItem
+                  className="text-danger"
+                  isDisabled={applyData['status'] !== ApplyStatus.APPLYING}
+                  onClick={() => {
+                    console.log('Withdraw', applyData['uid'], applyData['applyId']);
+                    cancelApply({
+                      uid: applyData['uid'],
+                      applyId: applyData['applyId'],
+                    })
+                      .then(() => {
+                        toast({
+                          title: '撤回成功',
+                        });
+                        refresh();
+                      })
+                      .catch((err) => {
+                        toast({
+                          title: '撤回失败',
+                          description: err.message,
+                          variant: 'destructive',
+                        });
+                      });
+                  }}
+                >
+                  撤回申请
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>

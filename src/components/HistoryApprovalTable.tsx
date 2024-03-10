@@ -110,7 +110,11 @@ export const HistoryApprovalTable = ({
       case 'status':
         return <Chip>{applyStatusMap[cellValue]}</Chip>;
       case 'approvalTime':
-        return <div>{dayjs.unix(cellValue as number).format('YYYY-MM-DD HH:mm:ss')}</div>;
+        return (
+          <div>
+            {cellValue ? dayjs.unix(cellValue as number).format('YYYY-MM-DD HH:mm:ss') : '未处理'}
+          </div>
+        );
       case 'actions':
         return (
           <div className="relative flex justify-end items-center gap-2">
