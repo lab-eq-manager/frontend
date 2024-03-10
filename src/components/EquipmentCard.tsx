@@ -76,8 +76,12 @@ export const EquipmentCard: React.FC<EquipmentCardProps> = ({
             <Chip color={statusIdtoColor[equipment.status]} variant="solid">
               {statusIdtoText[equipment.status]}
             </Chip>
-            <Chip variant="flat">设备号 {equipment.eqId}</Chip>
-            <Chip variant="flat">所属实验室 {equipment.labId}</Chip>
+            <Chip variant="flat">
+              <span className=" text-gray-600">设备号</span> {equipment.eqId}
+            </Chip>
+            <Chip variant="flat">
+              <span className=" text-gray-600">所属实验室</span> {equipment.labId}
+            </Chip>
           </div>
           <div className="text-sm text-gray-600 p-1">
             {equipment.info.split('\n').map((line, index) => (
