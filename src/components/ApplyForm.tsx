@@ -201,7 +201,12 @@ export function ApplyForm({ eqId }) {
           control={control}
           defaultValue=""
           render={({ field }) => (
-            <Textarea {...field} label="申请理由" placeholder="请输入申请理由" className="w-full" />
+            <Textarea
+              {...field}
+              label="申请理由"
+              placeholder="请输入申请理由，包括实验目的、样品名称、样品数量"
+              className="w-full"
+            />
           )}
         />
       </CardBody>
