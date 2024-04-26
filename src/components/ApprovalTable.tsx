@@ -136,6 +136,8 @@ export const ApprovalTable = ({
                           variant: 'destructive',
                         });
                       });
+                    console.log('==applyData', applyData);
+                    getData();
                   }}
                 >
                   批准
@@ -194,6 +196,7 @@ export const ApprovalTable = ({
               ))}
             </DropdownMenu>
           </Dropdown>
+          <div>当前展示第 {localStorage.getItem('page') || 1} 页数据</div>
         </div>
       )}
 

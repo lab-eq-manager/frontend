@@ -15,6 +15,12 @@ import {
   DropdownItem,
   DropdownMenu,
   Input,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from '@nextui-org/react';
 import { useCallback, useState, useMemo } from 'react';
 import { ChevronDownIcon } from 'lucide-react';
@@ -22,6 +28,47 @@ import { useNavigate } from 'react-router-dom';
 import { GetLabListInfo, GetLabListResponse, deleteLab, updateLabInfo } from '@/utils/requests';
 import { useForm } from 'react-hook-form';
 import { useToast } from './ui/use-toast';
+
+import React from 'react';
+
+export default function ModalDelete(props) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { onDelete } = props;
+
+  return (
+    <>
+      <Button color="danger" size="sm" onPress={onOpen}>
+        删除
+      </Button>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">确认删除</ModalHeader>
+              <ModalBody>
+                <p>删除后的数据将无法恢复，是否确认删除？</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" variant="light" onPress={onClose}>
+                  取消
+                </Button>
+                <Button
+                  color="danger"
+                  onPress={() => {
+                    onDelete();
+                    onClose();
+                  }}
+                >
+                  确认
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -137,11 +184,8 @@ export const LabTable = ({
                 </>
               </PopoverContent>
             </Popover>
-            <Button
-              color="danger"
-              size="sm"
-              isDisabled={!canAddLab}
-              onClick={() => {
+            <ModalDelete
+              onDelete={() => {
                 deleteLab({ labId: applyData.labId })
                   .then((res) => {
                     toast({
@@ -157,9 +201,7 @@ export const LabTable = ({
                     });
                   });
               }}
-            >
-              删除
-            </Button>
+            />
           </div>
         );
       default:
