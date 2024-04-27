@@ -33,6 +33,7 @@ function capitalize(str: string) {
 const columns = [
   { name: '申请编号', uid: 'applyId' },
   { name: '设备编号', uid: 'eqId' },
+  { name: '设备名称', uid: 'eqName' },
   { name: '申请人学号', uid: 'uid' },
   { name: '申请人姓名', uid: 'Name' },
   { name: '申请时间', uid: 'applyTime' },
@@ -68,7 +69,8 @@ export const ApprovalTable = ({
 }) => {
   const INITIAL_VISIBLE_COLUMNS = showColumn || [
     'Name',
-    'eqId',
+    // 'eqId',
+    'eqName',
     'applyDate',
     'timeIndex',
     'actions',
@@ -91,10 +93,12 @@ export const ApprovalTable = ({
       const timeIndexArr = timeIndex.substring(1, timeIndex.length - 1).split(',');
       return timeIndexArr.map((index) => availableTime[index as number]).join(' / ');
     };
+
     switch (columnKey) {
       case 'uid':
       case 'Name':
       case 'eqId':
+      case 'eqName':
       case 'applyDate':
       case 'applyTime':
         return <div>{cellValue}</div>;

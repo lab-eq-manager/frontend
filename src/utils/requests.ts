@@ -320,7 +320,17 @@ export const getAdminApprovalList = async (data: GetAdminApprovalListRequest) =>
   const response = await axios.post('/api/manage/approve/list', data).catch((error) => {
     throw error.response.data;
   });
-  return response.data.data;
+  const ret = [];
+  for (const item of response.data.data.applies) {
+    ret.push({
+      ...item.apply,
+      eqName: item.equipment.name,
+    });
+  }
+  return {
+    applies: ret,
+    length: response.data.data.length,
+  };
 };
 
 export interface AdminApprovalRequest {
