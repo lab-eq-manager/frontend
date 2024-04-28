@@ -22,7 +22,7 @@ const EquipmentList: React.FC<{ equipments: Equipment[]; isAdmin: boolean }> = (
   );
 };
 
-const useEquipmentList = () => {
+export const useEquipmentList = () => {
   const [equipments, setEquipments] = useState<Equipment[]>([]);
   const { toast } = useToast();
   useEffect(() => {

@@ -19,7 +19,7 @@ import {
   Chip,
 } from '@nextui-org/react';
 import { ApplyEquipmentRequest, applyStatusMap, availableTime, equipmentStatusMap } from '@/types';
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo, useEffect } from 'react';
 import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AdminApprovalInfo, adminApproval, adminReject, getExcel } from '@/utils/requests';
@@ -62,11 +62,17 @@ export const ApprovalTable = ({
   showColumn,
   canCustomColumn,
   getData,
+  selectedData,
+  setSelectedData,
+  children,
 }: {
   eqData: AdminApprovalInfo[];
   showColumn?: AdminApprovalTableColumn[];
   canCustomColumn?: boolean;
   getData: () => void;
+  selectedData: AdminApprovalInfo[];
+  setSelectedData: React.Dispatch<React.SetStateAction<AdminApprovalInfo[]>>;
+  children?: React.ReactNode;
 }) => {
   const INITIAL_VISIBLE_COLUMNS = showColumn || [
     'Name',
@@ -80,6 +86,8 @@ export const ApprovalTable = ({
   const navigate = useNavigate();
 
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
+  const [selectedKeys, setSelectedKeys] = useState(new Set<string>([]));
+  // const [selectedData, setSelectedData] = useState<AdminApprovalInfo[]>([]);
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === 'all') return columns;
@@ -178,39 +186,62 @@ export const ApprovalTable = ({
     }
   }, []);
 
+  const setSelect = (keys: Set<string>) => {
+    setSelectedKeys(keys);
+    const keyArr =
+      keys === 'all'
+        ? eqData.map((item) => item.applyId)
+        : Array.from(keys).map((key) => parseInt(key));
+    console.log('==keyArr', keyArr);
+    keyArr.forEach((key) => {
+      const selectData = eqData.find((item) => item.applyId === key);
+      if (selectData && !selectedData.find((item) => item.applyId === key)) {
+        setSelectedData((prev) => [...prev, selectData]);
+      }
+    });
+    setSelectedData((prev) => prev.filter((item) => keyArr.includes(item.applyId)));
+  };
+
   return (
-    <div className="wrapper flex gap-2 flex-col w-content">
+    <div className="wrapper flex gap-2 flex-col w-content min-w-full">
       {canCustomColumn && (
         <div className="toolbar flex items-center justify-between">
-          <Dropdown>
-            <DropdownTrigger className="hidden sm:flex">
-              <Button endContent={<ChevronDownIcon strokeWidth={1} />} variant="flat">
-                展示项目
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              disallowEmptySelection
-              aria-label="Table Columns"
-              closeOnSelect={false}
-              selectedKeys={visibleColumns}
-              selectionMode="multiple"
-              onSelectionChange={setVisibleColumns}
-            >
-              {columns.map((column) => (
-                <DropdownItem key={column.uid} className="capitalize">
-                  {capitalize(column.name)}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
+          <div className="flex gap-4 items-center">
+            <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronDownIcon strokeWidth={1} />} variant="flat">
+                  展示项目
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={visibleColumns}
+                selectionMode="multiple"
+                onSelectionChange={setVisibleColumns}
+              >
+                {columns.map((column) => (
+                  <DropdownItem key={column.uid} className="capitalize">
+                    {capitalize(column.name)}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+            {children}
+          </div>
           <div>当前展示第 {localStorage.getItem('page') || 1} 页数据</div>
         </div>
       )}
 
       <Table
+        id="approval-table"
         aria-label="Example table with custom cells, pagination and sorting"
         isHeaderSticky
         topContentPlacement="outside"
+        selectedKeys={selectedKeys}
+        onSelectionChange={(keys) => setSelect(keys)}
+        selectionMode="multiple"
       >
         <TableHeader columns={headerColumns}>
           {(column) => (
