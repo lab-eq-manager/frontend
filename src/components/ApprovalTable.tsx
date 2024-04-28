@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import { AdminApprovalInfo, adminApproval, adminReject, getExcel } from '@/utils/requests';
 import { toast } from './ui/use-toast';
 import axios from 'axios';
+import { mergeTimeIndex } from '@/utils/mergeTimeIndex';
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -91,20 +92,22 @@ export const ApprovalTable = ({
 
     const getTimeIndexShow = (timeIndex: string) => {
       const timeIndexArr = timeIndex.substring(1, timeIndex.length - 1).split(',');
-      return timeIndexArr.map((index) => availableTime[index as number]).join(' / ');
+      return mergeTimeIndex(timeIndexArr.map((index) => parseInt(index)).sort((a, b) => a - b));
+      // return timeIndexArr.map((index) => availableTime[index as number]).join(' / ');
     };
 
     switch (columnKey) {
+      case 'eqName':
+        return <div>{cellValue}</div>;
       case 'uid':
       case 'Name':
       case 'eqId':
-      case 'eqName':
       case 'applyDate':
       case 'applyTime':
-        return <div>{cellValue}</div>;
+        return <div style={{ width: 'max-content' }}>{cellValue}</div>;
       case 'timeIndex':
         // return <div>{availableTime[cellValue]}</div>;
-        return <div>{getTimeIndexShow(cellValue)}</div>;
+        return <div style={{ width: 'max-content' }}>{getTimeIndexShow(cellValue)}</div>;
       case 'status':
         return <Chip>{applyStatusMap[cellValue]}</Chip>;
       case 'actions':
@@ -176,7 +179,7 @@ export const ApprovalTable = ({
   }, []);
 
   return (
-    <div className="wrapper flex gap-2 flex-col w-full">
+    <div className="wrapper flex gap-2 flex-col w-content">
       {canCustomColumn && (
         <div className="toolbar flex items-center justify-between">
           <Dropdown>
