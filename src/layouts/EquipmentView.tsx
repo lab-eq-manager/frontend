@@ -6,27 +6,34 @@ import { ApplyForm } from '../components/ApplyForm';
 import { useEffect, useState } from 'react';
 import { getEquipmentDetail } from '@/utils/requests';
 import { Equipment } from '@/types';
+import { useLoading } from '@/utils/useLoading';
 
 export const EquipmentView: React.FC = () => {
   const eqId = useParams<{ eqId: string }>().eqId || '';
   const [equipment, setEquipment] = useState<Equipment>();
+  const { isLoading, Loading, setLoading } = useLoading();
 
   useEffect(() => {
+    setLoading(true);
     getEquipmentDetail({ eqId })
       .then((res) => {
         setEquipment(res);
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [eqId]);
 
   return (
     <div className="apply-wrapper flex flex-col items-center gap-8 w-full">
       <div className="title font-semibold text-2xl">设备详情</div>
-      {equipment && (
+      {!isLoading && equipment && (
         <EquipmentCard fullView equipment={equipment} showButton={false} showManageButton={false} />
       )}
+      {isLoading && <Loading />}
     </div>
   );
 };

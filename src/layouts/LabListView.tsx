@@ -7,14 +7,17 @@ import { Button } from '@nextui-org/react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { UserRole } from '@/types';
+import { useLoading } from '@/utils/useLoading';
 
 export const LabListView: React.FC = () => {
   const [tableData, setTableData] = React.useState();
   const { toast } = useToast();
   const navigate = useNavigate();
   const role = useSelector((state) => state.role);
+  const { isLoading, Loading, setLoading } = useLoading();
 
   const getData = () => {
+    setLoading(true);
     getLabList()
       .then((res) => {
         setTableData(res);
@@ -25,6 +28,9 @@ export const LabListView: React.FC = () => {
           description: err.message,
           variant: 'destructive',
         });
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -35,24 +41,30 @@ export const LabListView: React.FC = () => {
   return (
     <div className="lab-list-wrapper flex flex-col items-center gap-8 w-full">
       <div className="title font-semibold text-2xl">实验室列表</div>
-      {tableData && tableData?.length !== 0 ? (
-        <LabTable
-          tableData={tableData}
-          canCustomColumn
-          getData={() => getData()}
-          canAddLab={role === UserRole.SUPER_ADMIN}
-        />
+      {isLoading ? (
+        <Loading />
       ) : (
-        role === UserRole.SUPER_ADMIN && (
-          <Button
-            color="primary"
-            onClick={() => {
-              navigate(`/manage/lab/add`);
-            }}
-          >
-            添加实验室
-          </Button>
-        )
+        <>
+          {tableData && tableData?.length !== 0 ? (
+            <LabTable
+              tableData={tableData}
+              canCustomColumn
+              getData={() => getData()}
+              canAddLab={role === UserRole.SUPER_ADMIN}
+            />
+          ) : (
+            role === UserRole.SUPER_ADMIN && (
+              <Button
+                color="primary"
+                onClick={() => {
+                  navigate(`/manage/lab/add`);
+                }}
+              >
+                添加实验室
+              </Button>
+            )
+          )}
+        </>
       )}
     </div>
   );

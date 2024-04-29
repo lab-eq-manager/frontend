@@ -6,6 +6,7 @@ import { Button, Input } from '@nextui-org/react';
 import { getEquipmentList } from '@/utils/requests';
 import { useToast } from '@/components/ui/use-toast';
 import { useSelector } from 'react-redux';
+import { useLoading } from '@/utils/useLoading';
 
 const EquipmentList: React.FC<{ equipments: Equipment[]; isAdmin: boolean }> = (props) => {
   return (
@@ -22,10 +23,12 @@ const EquipmentList: React.FC<{ equipments: Equipment[]; isAdmin: boolean }> = (
   );
 };
 
-export const useEquipmentList = () => {
+export const useEquipmentList = (setLoading) => {
   const [equipments, setEquipments] = useState<Equipment[]>([]);
+
   const { toast } = useToast();
   useEffect(() => {
+    setLoading && setLoading(true);
     getEquipmentList()
       .then((res) => {
         setEquipments(res);
@@ -36,6 +39,9 @@ export const useEquipmentList = () => {
           description: err.message,
           variant: 'destructive',
         });
+      })
+      .finally(() => {
+        setLoading && setLoading(false);
       });
   }, []);
 
@@ -45,8 +51,9 @@ export const useEquipmentList = () => {
 export const Equipments: React.FC = () => {
   const role = useSelector((state) => state.role);
   const isAdmin = role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN;
+  const { isLoading, Loading, setLoading } = useLoading();
   const [search, setSearch] = useState('');
-  const { equipments } = useEquipmentList();
+  const { equipments } = useEquipmentList(setLoading);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -64,30 +71,36 @@ export const Equipments: React.FC = () => {
 
   return (
     <div className="w-full flex gap-6 flex-col ">
-      <div className="toolbar flex gap-2">
-        <Input
-          label="搜索名称、设备号、实验室..."
-          className="bg-slate-50"
-          variant="bordered"
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-        />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="toolbar flex gap-2">
+            <Input
+              label="搜索名称、设备号、实验室..."
+              className="bg-slate-50"
+              variant="bordered"
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+            />
 
-        {isAdmin && (
-          <Button
-            color="primary"
-            style={{ height: '3.4rem' }}
-            onClick={() => {
-              navigate('/equipment/add');
-            }}
-          >
-            添加设备
-          </Button>
-        )}
-      </div>
+            {isAdmin && (
+              <Button
+                color="primary"
+                style={{ height: '3.4rem' }}
+                onClick={() => {
+                  navigate('/equipment/add');
+                }}
+              >
+                添加设备
+              </Button>
+            )}
+          </div>
 
-      <EquipmentList equipments={filteredEquipments} isAdmin={isAdmin} />
+          <EquipmentList equipments={filteredEquipments} isAdmin={isAdmin} />
+        </>
+      )}
     </div>
   );
 };
