@@ -3,6 +3,7 @@ import { getUserInfo, login, LoginRequest } from './requests';
 
 export interface RootModel extends Models<RootModel> {
   uid: typeof uid;
+  role: typeof role;
 }
 
 export const role = createModel<RootModel>()({
@@ -35,4 +36,23 @@ export const uid = createModel<RootModel>()({
   }),
 });
 
-export const models: RootModel = { uid, role };
+export interface FilterValue {
+  eqName?: string;
+  labName?: string;
+  userName?: string;
+  applyDate?: string;
+  isExpire?: string;
+}
+
+const initialFilterValue: FilterValue = {};
+
+export const filterValue = createModel<RootModel>()({
+  state: initialFilterValue,
+  reducers: {
+    setFilterValue(state, payload: FilterValue) {
+      return payload;
+    },
+  },
+});
+
+export const models: RootModel = { uid, role, filterValue };

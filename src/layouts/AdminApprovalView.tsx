@@ -25,6 +25,7 @@ import {
 } from '@nextui-org/react';
 import { set } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export const AdminApprovalView: React.FC = () => {
   const pageFromStorage = localStorage.getItem('page');
@@ -36,12 +37,13 @@ export const AdminApprovalView: React.FC = () => {
   const [pageTotal, setPageTotal] = useState(0);
   const { toast } = useToast();
   const [selectedData, setSelectedData] = useState<AdminApprovalInfo[]>([]);
+  const filterVal = useSelector((state) => state.filterValue);
 
   const getData = () => {
     const pageFromStorageG = localStorage.getItem('page');
     const initPageG = pageFromStorageG ? parseInt(pageFromStorageG) : 1;
     console.log('==getData', pageFromStorageG, initPageG);
-    const filterVal = JSON.parse(localStorage.getItem('filterVal') || '{}');
+
     console.log('==filterVal', filterVal);
     getAdminApprovalList({ pageNo: initPageG, pageSize: pageSize, ...filterVal })
       .then((res: GetAdminApprovalListResponse) => {
@@ -52,6 +54,7 @@ export const AdminApprovalView: React.FC = () => {
         }
       })
       .catch((err) => {
+        // setEqData([]);
         if (err.error_code === 40000) {
           toast({
             title: '获取申请列表失败',
@@ -70,7 +73,7 @@ export const AdminApprovalView: React.FC = () => {
 
   useEffect(() => {
     getData();
-  }, [page, pageSize]);
+  }, [page, pageSize, filterVal]);
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
@@ -89,13 +92,26 @@ export const AdminApprovalView: React.FC = () => {
                 getData={() => {
                   setSelectedData([]);
                   setPage(1);
-                  getData();
+                  // getData();
+                  // 创建事件
+                  window.dispatchEvent(new Event('reselect'));
                 }}
               />
             }
           />
         ) : (
-          <div className="text-gray-400">暂无待处理申请</div>
+          <div className="text-gray-400 flex w-full items-center justify-center flex-col gap-10">
+            <ApprovalFilter
+              getData={() => {
+                setSelectedData([]);
+                setPage(1);
+                getData();
+                // 创建事件
+                window.dispatchEvent(new Event('reselect'));
+              }}
+            />
+            暂无待处理申请
+          </div>
         )}
 
         <div className="buttom flex justify-between w-full">

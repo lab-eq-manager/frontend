@@ -202,6 +202,10 @@ export const ApprovalTable = ({
     setSelectedData((prev) => prev.filter((item) => keyArr.includes(item.applyId)));
   };
 
+  window.addEventListener('reselect', () => {
+    setSelectedKeys(new Set<string>());
+  });
+
   return (
     <div className="wrapper flex gap-2 flex-col w-content min-w-full">
       {canCustomColumn && (

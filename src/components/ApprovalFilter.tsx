@@ -13,6 +13,7 @@ import {
   Chip,
   Select,
   SelectItem,
+  Badge,
 } from '@nextui-org/react';
 import {
   AdminApprovalInfo,
@@ -24,28 +25,53 @@ import {
 import { useEquipmentList } from '@/layouts/Equipments';
 import { useToast } from './ui/use-toast';
 import { userRoleMap } from '@/types';
+import { useSelector } from 'react-redux';
+import { store } from '@/utils/store';
 
 export default function ApprovalFilter(props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const filterValue = useSelector((state) => state.filterValue);
 
   const { equipments } = useEquipmentList();
   const [labList, setLabList] = useState([]);
   const [usernameList, setUsernameList] = useState([]);
   const { toast } = useToast();
 
-  const [eqName, setEqName] = useState('');
-  const [labName, setLabName] = useState('');
-  const [applicantName, setApplicantName] = useState('');
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
-  const [day, setDay] = useState('');
-  const [isExpired, setIsExpired] = useState(new Set());
+  const {
+    eqName: eqNameFromStorage,
+    labName: labNameFromStorage,
+    day: dayFromStorage,
+    month: monthFromStorage,
+    year: yearFromStorage,
+    isExpired: isExpiredFromStorage,
+    applicantName: applicantNameFromStorage,
+  } = JSON.parse(localStorage.getItem('fromFilter') || '{}');
 
-  const onConfirm = () => {
+  const [eqName, setEqName] = useState(eqNameFromStorage || '');
+  const [labName, setLabName] = useState(labNameFromStorage || '');
+  const [applicantName, setApplicantName] = useState(applicantNameFromStorage || '');
+  const [year, setYear] = useState(yearFromStorage || '');
+  const [month, setMonth] = useState(monthFromStorage || '');
+  const [day, setDay] = useState(dayFromStorage || '');
+  const [isExpired, setIsExpired] = useState(new Set(isExpiredFromStorage || []));
+
+  const toFilterValue = () => {
     const filterVal = {};
-    eqName && (filterVal.eqName = eqName);
-    labName && (filterVal.labName = labName);
+
+    // From "eq123-name" to "name"
+    const eqNameArr = eqName?.split('-')?.slice(1);
+    const eqNameStr = eqNameArr?.join('-');
+    eqName && (filterVal.eqName = eqNameStr);
+
+    // From "lab123-name" to "name"
+    const labNameArr = labName?.split('-')?.slice(1);
+    const labNameStr = labNameArr?.join('-');
+    labName && (filterVal.labName = labNameStr);
+
+    // From "uid-username" to "username"
     applicantName && (filterVal.userName = applicantName.split('-')[1]);
+
     year &&
       month &&
       day &&
@@ -54,8 +80,26 @@ export default function ApprovalFilter(props) {
       }${day}`);
     isExpired.size > 0 &&
       (filterVal.isExpire = Array.from(isExpired)[0] === 'sel-exp' ? 'true' : 'false');
-    localStorage.setItem('filterVal', JSON.stringify(filterVal));
+
+    return filterVal;
+  };
+
+  const onConfirm = () => {
+    const filterVal = toFilterValue();
+    store.dispatch.filterValue.setFilterValue(filterVal);
     localStorage.setItem('page', '1');
+    localStorage.setItem(
+      'fromFilter',
+      JSON.stringify({
+        eqName,
+        labName,
+        applicantName,
+        year,
+        month,
+        day,
+        isExpired: Array.from(isExpired),
+      }),
+    );
     props.getData();
   };
 
@@ -96,9 +140,24 @@ export default function ApprovalFilter(props) {
 
   return (
     <>
-      <Button onPress={onOpen} color="primary" variant="flat">
-        筛选
-      </Button>
+      <Badge
+        color="primary"
+        variant="solid"
+        size="sm"
+        isDot
+        content="已设置"
+        isInvisible={
+          filterValue.eqName === undefined &&
+          filterValue.labName === undefined &&
+          filterValue.userName === undefined &&
+          filterValue.applyDate === undefined &&
+          filterValue.isExpire === undefined
+        }
+      >
+        <Button onPress={onOpen} color="primary" variant="flat">
+          筛选
+        </Button>
+      </Badge>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
@@ -112,8 +171,8 @@ export default function ApprovalFilter(props) {
                     selectedKey={eqName}
                     onSelectionChange={(key) => setEqName(key)}
                   >
-                    {equipments.map((equipment) => (
-                      <AutocompleteItem key={equipment.name} value={equipment.name}>
+                    {equipments.map((equipment, index) => (
+                      <AutocompleteItem key={`eq${index}-${equipment.name}`} value={equipment.name}>
                         {equipment.name}
                       </AutocompleteItem>
                     ))}
@@ -124,8 +183,8 @@ export default function ApprovalFilter(props) {
                     selectedKey={labName}
                     onSelectionChange={(key) => setLabName(key)}
                   >
-                    {labList.map((lab) => (
-                      <AutocompleteItem key={lab.name} value={lab.name}>
+                    {labList.map((lab, index) => (
+                      <AutocompleteItem key={`lab${index}-${lab.name}`} value={lab.name}>
                         {lab.name}
                       </AutocompleteItem>
                     ))}
@@ -148,6 +207,9 @@ export default function ApprovalFilter(props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
+                  <div className=" text-small text-gray-500 m-2 mt-0 mb-0">
+                    双击输入框，光标闪烁时可以输入设备名称、实验室名称、申请人姓名进行搜索，选择后会自动填充
+                  </div>
                   <div className="flex gap-4">
                     <Input
                       label="年"
