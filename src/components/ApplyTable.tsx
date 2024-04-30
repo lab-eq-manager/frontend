@@ -30,6 +30,7 @@ import { ChevronDownIcon, MoreVerticalIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cancelApply } from '@/utils/requests';
 import { toast, useToast } from './ui/use-toast';
+import { mergeTimeIndex } from '@/utils/mergeTimeIndex';
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -90,7 +91,8 @@ export const ApplyTable = ({
 
     const getTimeIndexShow = (timeIndex: string) => {
       const timeIndexArr = timeIndex.substring(1, timeIndex.length - 1).split(',');
-      return timeIndexArr.map((index) => availableTime[index as number]).join(' / ');
+      return mergeTimeIndex(timeIndexArr.map((index) => parseInt(index)).sort((a, b) => a - b));
+      // return timeIndexArr.map((index) => availableTime[index as number]).join(' / ');
     };
 
     switch (columnKey) {
