@@ -5,6 +5,8 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   AdminApprovalInfo,
   GetAdminApprovalListResponse,
+  batchApprove,
+  batchDeny,
   getAdminApprovalList,
   getLabList,
   getManageUserList,
@@ -131,14 +133,50 @@ export const AdminApprovalView: React.FC = () => {
                 data={selectedData}
                 label="一键拒绝"
                 type="danger"
-                onConfirm={() => {}}
+                onConfirm={(applyIds: number[]) => {
+                  batchDeny({ applyIds })
+                    .then(() => {
+                      setSelectedData([]);
+                      getData();
+                      toast({
+                        title: '操作成功',
+                        description: '已成功拒绝选中的申请',
+                        variant: 'success',
+                      });
+                    })
+                    .catch((err) => {
+                      toast({
+                        title: '操作失败',
+                        description: err.message,
+                        variant: 'destructive',
+                      });
+                    });
+                }}
                 disabled={selectedData.length === 0}
               />
               <MiniTable
                 data={selectedData}
                 label="一键批准"
                 type="primary"
-                onConfirm={() => {}}
+                onConfirm={(applyIds: number[]) => {
+                  batchApprove({ applyIds })
+                    .then(() => {
+                      setSelectedData([]);
+                      getData();
+                      toast({
+                        title: '操作成功',
+                        description: '已成功批准选中的申请',
+                        variant: 'success',
+                      });
+                    })
+                    .catch((err) => {
+                      toast({
+                        title: '操作失败',
+                        description: err.message,
+                        variant: 'destructive',
+                      });
+                    });
+                }}
                 disabled={selectedData.length === 0}
               />
             </div>

@@ -421,3 +421,30 @@ export const cancelApply = async (data: CancelApplyRequest) => {
     });
   return response.data.data;
 };
+
+interface BatchOperateRequest {
+  applyIds: number[];
+}
+
+export const batchApprove = async (data: BatchOperateRequest) => {
+  console.log('==Batch Approve', { ...data });
+  const response = await axios
+    .post('/api/manage/apply/batch/approve', {
+      ...data,
+    })
+    .catch((error) => {
+      throw error.response.data;
+    });
+  return response.data.data;
+};
+
+export const batchDeny = async (data: BatchOperateRequest) => {
+  const response = await axios
+    .post('/api/manage/apply/batch/deny', {
+      ...data,
+    })
+    .catch((error) => {
+      throw error.response.data;
+    });
+  return response.data.data;
+};

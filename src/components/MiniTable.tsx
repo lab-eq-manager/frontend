@@ -19,7 +19,7 @@ const getTimeIndexShow = (timeIndex: string) => {
 
 export default function MiniTable(props: {
   data: AdminApprovalInfo[];
-  onConfirm: () => void;
+  onConfirm: (applyIds: number[]) => void;
   label: string;
   type?: 'danger' | 'primary';
   disabled?: boolean;
@@ -61,7 +61,8 @@ export default function MiniTable(props: {
                 <Button
                   color={props?.type || 'primary'}
                   onPress={() => {
-                    props.onConfirm();
+                    const applyIds = props.data.map((item) => parseInt(item.applyId));
+                    props.onConfirm(applyIds);
                     onClose();
                   }}
                 >
