@@ -258,8 +258,10 @@ export default function ApprovalFilter(props) {
                 <Button
                   color="primary"
                   onPress={() => {
-                    onConfirm();
                     onClose();
+                    setTimeout(() => {
+                      onConfirm();
+                    }, 200);
                   }}
                 >
                   确认

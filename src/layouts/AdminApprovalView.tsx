@@ -25,9 +25,12 @@ import {
   useDisclosure,
   Autocomplete,
   AutocompleteItem,
+  Select,
+  Input,
+  SelectItem,
 } from '@nextui-org/react';
 import { set } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 export const AdminApprovalView: React.FC = () => {
@@ -43,6 +46,60 @@ export const AdminApprovalView: React.FC = () => {
   const { toast } = useToast();
   const [selectedData, setSelectedData] = useState<AdminApprovalInfo[]>([]);
   const filterVal = useSelector((state) => state.filterValue);
+
+  const [inputPageSize, setInputPageSize] = useState(new Set(['pageSize-10']));
+
+  const keyMaps = useMemo(
+    () => [
+      {
+        key: `pageSize-10`,
+        value: 10,
+        label: '每页10条',
+      },
+      {
+        key: `pageSize-20`,
+        value: 20,
+        label: '每页20条',
+      },
+      {
+        key: `pageSize-50`,
+        value: 50,
+        label: '每页50条',
+      },
+      {
+        key: `pageSize-100`,
+        value: 100,
+        label: '每页100条',
+      },
+    ],
+    [],
+  );
+
+  const SetPageSize = () => {
+    return (
+      <Select
+        className="w-40"
+        selectedKeys={inputPageSize}
+        onSelectionChange={setInputPageSize}
+        labelPlacement="outside-left"
+        aria-label="Select page size"
+        variant="bordered"
+      >
+        {keyMaps.map((item) => (
+          <SelectItem key={item.key} value={item.value}>
+            {item.label}
+          </SelectItem>
+        ))}
+      </Select>
+    );
+  };
+
+  useEffect(() => {
+    const val = Array.from(inputPageSize)[0];
+    const pageSizeNew = keyMaps.find((item) => item.key === val)?.value || 10;
+    console.log('==pageSizeNew', pageSizeNew, val);
+    setPageSize(pageSizeNew as number);
+  }, [inputPageSize, keyMaps]);
 
   const getData = (noLoading?: boolean) => {
     !noLoading && setLoading(true);
@@ -77,6 +134,8 @@ export const AdminApprovalView: React.FC = () => {
   };
 
   useEffect(() => {
+    setPage(1);
+    localStorage.setItem('page', '1');
     getData();
   }, [pageSize, filterVal]);
 
@@ -100,15 +159,18 @@ export const AdminApprovalView: React.FC = () => {
               selectedData={selectedData}
               setSelectedData={setSelectedData}
               children={
-                <ApprovalFilter
-                  getData={() => {
-                    setSelectedData([]);
-                    setPage(1);
-                    // getData();
-                    // 创建事件
-                    window.dispatchEvent(new Event('reselect'));
-                  }}
-                />
+                <div className="flex gap-4">
+                  <ApprovalFilter
+                    getData={() => {
+                      setSelectedData([]);
+                      setPage(1);
+                      // getData();
+                      // 创建事件
+                      window.dispatchEvent(new Event('reselect'));
+                    }}
+                  />
+                  <SetPageSize />
+                </div>
               }
             />
           ) : (
