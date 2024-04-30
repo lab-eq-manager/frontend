@@ -67,10 +67,25 @@ export function ApplyForm({ eqId }) {
       ...data,
       timeIndex: groupSelected.map((index) => parseInt(index)),
     };
+    if (req.timeIndex.length === 0) {
+      toast({
+        title: '申请失败',
+        description: '请选择使用时间段',
+        variant: 'destructive',
+      });
+      return;
+    }
     applyEquipment(req)
       .then((res) => {
-        toast({
-          title: '申请成功',
+        queryAvailableTime({
+          eqId: eqId,
+          applyDate: dayjs(date?.toDateString()).format('YYYY-MM-DD'),
+        }).then((res) => {
+          setAvailableTimeIndex(res.timeIndexes);
+          setGroupSelected([]);
+          toast({
+            title: '申请成功！列表已刷新。',
+          });
         });
       })
       .catch((err) => {
