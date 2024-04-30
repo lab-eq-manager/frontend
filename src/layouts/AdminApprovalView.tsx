@@ -44,8 +44,8 @@ export const AdminApprovalView: React.FC = () => {
   const [selectedData, setSelectedData] = useState<AdminApprovalInfo[]>([]);
   const filterVal = useSelector((state) => state.filterValue);
 
-  const getData = () => {
-    setLoading(true);
+  const getData = (noLoading?: boolean) => {
+    !noLoading && setLoading(true);
     const pageFromStorageG = localStorage.getItem('page');
     const initPageG = pageFromStorageG ? parseInt(pageFromStorageG) : 1;
     console.log('==getData', pageFromStorageG, initPageG);
@@ -60,13 +60,9 @@ export const AdminApprovalView: React.FC = () => {
         }
       })
       .catch((err) => {
-        // setEqData([]);
+        setEqData([]);
         if (err.error_code === 40000) {
-          toast({
-            title: '获取申请列表失败',
-            description: '选择的这一页没有数据',
-            variant: 'destructive',
-          });
+          console.log('==err', err);
         } else {
           toast({
             title: '获取申请列表失败',
@@ -76,13 +72,17 @@ export const AdminApprovalView: React.FC = () => {
         }
       })
       .finally(() => {
-        setLoading(false);
+        !noLoading && setLoading(false);
       });
   };
 
   useEffect(() => {
     getData();
-  }, [page, pageSize, filterVal]);
+  }, [pageSize, filterVal]);
+
+  useEffect(() => {
+    getData(true);
+  }, [page]);
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
@@ -92,7 +92,7 @@ export const AdminApprovalView: React.FC = () => {
         <Loading />
       ) : (
         <div className="w-full flex flex-col items-center gap-3">
-          {eqData && eqData?.length !== 0 ? (
+          {eqData ? (
             <ApprovalTable
               eqData={eqData}
               canCustomColumn
@@ -182,14 +182,16 @@ export const AdminApprovalView: React.FC = () => {
             </div>
           </div>
 
-          <Pagination
-            page={page}
-            total={pageTotal}
-            onChange={(page: number) => {
-              setPage(page);
-              localStorage.setItem('page', page.toString());
-            }}
-          />
+          {eqData && eqData?.length >= 0 && (
+            <Pagination
+              page={page}
+              total={pageTotal}
+              onChange={(page: number) => {
+                setPage(page);
+                localStorage.setItem('page', page.toString());
+              }}
+            />
+          )}
         </div>
       )}
     </div>

@@ -96,6 +96,8 @@ export const ApprovalTable = ({
   }, [visibleColumns]);
 
   const renderCell = useCallback((applyData: AdminApprovalInfo, columnKey: React.Key) => {
+    if (!applyData) return null;
+
     const cellValue = applyData[columnKey as keyof AdminApprovalInfo];
 
     const getTimeIndexShow = (timeIndex: string) => {
@@ -258,7 +260,7 @@ export const ApprovalTable = ({
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={'No data'} items={eqData}>
+        <TableBody emptyContent={'暂无数据'} items={eqData}>
           {(item) => (
             <TableRow key={`${item.applyId}`}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
