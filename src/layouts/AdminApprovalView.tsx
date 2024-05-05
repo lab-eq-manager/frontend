@@ -112,9 +112,9 @@ export const AdminApprovalView: React.FC = () => {
       .then((res: GetAdminApprovalListResponse) => {
         setEqData(res.applies);
         setPageTotal(res.length);
-        if (res.length < page) {
-          localStorage.setItem('page', res.length.toString());
-        }
+        // if (res.length < page) {
+        //   localStorage.setItem('page', res.length.toString());
+        // }
       })
       .catch((err) => {
         setEqData([]);
